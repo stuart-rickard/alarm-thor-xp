@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Thor's Alarms</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <button onclick="sound(100,200)">click</button>
+    <div class="group">
+      <p>Group 1</p>
+      <p>Turn group on or off:</p>
+      <div class="radio-buttons">
+        <input type="radio" id="on" name="active" />
+        <label for="on">On</label>
+        <input type="radio" id="off" name="active" />
+        <label for="off">Off</label>
+      </div>
+      <p>Select active days</p>
+      <div class="weekDays-selector">
+        <input type="checkbox" id="weekday-sun" class="weekday" />
+        <label for="weekday-sun">S</label>
+        <input type="checkbox" id="weekday-mon" class="weekday" />
+        <label for="weekday-mon">M</label>
+        <input type="checkbox" id="weekday-tue" class="weekday" />
+        <label for="weekday-tue">T</label>
+        <input type="checkbox" id="weekday-wed" class="weekday" />
+        <label for="weekday-wed">W</label>
+        <input type="checkbox" id="weekday-thu" class="weekday" />
+        <label for="weekday-thu">T</label>
+        <input type="checkbox" id="weekday-fri" class="weekday" />
+        <label for="weekday-fri">F</label>
+        <input type="checkbox" id="weekday-sat" class="weekday" />
+        <label for="weekday-sat">S</label>
+      </div>
+      <p>2:30 PM</p>
+      <button id="add-alarm">+ add alarm</button>
+      <label for="alarm">Choose a time for your alarm:</label>
+      <input
+        type="time"
+        id="alarm"
+        name="alarm"
+        min="09:00"
+        max="18:00"
+        required
+      />
+    </div>
+    <button id="add-group">+ add group</button>
+    <script src="js/script.js"></script>
+  </body>
+</html>
