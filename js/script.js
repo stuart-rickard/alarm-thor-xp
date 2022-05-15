@@ -1,11 +1,19 @@
-// starter for alarm tone
+const activateButton = document.getElementById("activate");
+const groups = document.getElementById("groups");
+const addAlarmButtons = document.getElementsByClassName("add-alarm");
+const alarmForm = document.getElementById("new-alarm-form-1");
+let data = new FormData();
+
+const cl = function (log) {
+  console.log(log);
+};
 
 function sound(duration, frequency) {
   var context = new AudioContext();
   return new Promise((resolve, reject) => {
     try {
       let oscillator = context.createOscillator();
-      oscillator.type = "triangle";
+      oscillator.type = "sine";
       oscillator.connect(context.destination);
 
       // Set the oscillator frequency in hertz
@@ -25,13 +33,47 @@ function sound(duration, frequency) {
   });
 }
 
-// create time and day entry input box
+function delay(duration) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), duration);
+  });
+}
+
+function makeAlarm() {
+  sound(200, 300)
+    .then(() => sound(100, 600))
+    .then(() => sound(100, 900))
+    .then(() => sound(200, 300))
+    .then(() => delay(200))
+    .then(() => sound(200, 300))
+    .then(() => sound(100, 600))
+    .then(() => sound(100, 900))
+    .then(() => sound(200, 300));
+}
+
+activateButton.addEventListener("click", function (evt) {
+  makeAlarm();
+});
+
+alarmForm.addEventListener("click", function (evt) {
+  evt.preventDefault();
+  cl("alarmForm was clicked");
+  cl(evt);
+  data.append("time", document.getElementById("new-alarm-form-1").value);
+  cl(data);
+});
+
+// groups.addEventListener("click", function (evt) {
+//   console.log("groups clicked");
+//   console.log(evt);
+//   if (evt.path.includes("button.add-alarm")) {
+//     console.log("im included");
+//   }
+// });
+
 // create add new entry button
 
-// create group box
-// create new group button
-
-// create save and start timer button
+// TODO store setting
 
 // once started, check current day and time against timers
 // get current time

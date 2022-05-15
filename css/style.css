@@ -23,3 +23,14 @@
   outline: solid;
   outline-color: red;
 }
+
+.clock-adjust {
+  outline: solid;
+  outline-color: orange;
+}
+
+.time-pill {
+  display: flexbox;
+  border: solid;
+  border-color: blue;
+}
