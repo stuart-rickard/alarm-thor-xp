@@ -12,14 +12,14 @@
       <p>adjust for clock time</p>
       <div>computer time is</div>
       <p>enter clock time</p>
-      <input
+      <!-- <input
         type="time"
-        id="alarm"
+        id="alarm"s
         name="alarm"
         min="09:00"
         max="18:00"
         required
-      />
+      /> -->
       <p>difference is:</p>
     </div>
     <div class="groups" id="groups">
@@ -49,17 +49,18 @@
           <input type="checkbox" id="weekday-sat" class="weekday" />
           <label for="weekday-sat">S</label>
         </div>
-        <div class="time-pill">
-          2:30 PM alarm [list days]-- minutes until alarm:
+        <div class="alarm-times">
+          <p>2:30 PM alarm [list days]-- minutes until alarm:</p>
         </div>
+        <button class="delete-alarm">x delete alarm</button>
         <form id="new-alarm-form-1">
           <label for="alarm">Choose a time for your alarm:</label>
-          <input type="time" id="alarm" name="alarm" required />
-          <button class="add-alarm">+ add alarm</button>
+          <input type="time" id="alarmForTest" name="alarm" required />
+          <button id="add-alarm">+ add alarm</button>
         </form>
       </div>
 
-      <div class="group">
+      <!-- <div class="group">
         <p>Group 2</p>
         <p>Turn group on or off:</p>
         <div class="radio-buttons">
@@ -98,7 +99,7 @@
           required
         />
         <button class="add-alarm">+ add alarm</button>
-      </div>
+      </div> -->
     </div>
     <button id="add-group">+ add group</button>
     <script src="js/script.js"></script>

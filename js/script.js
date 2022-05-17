@@ -1,7 +1,10 @@
 const activateButton = document.getElementById("activate");
 const groups = document.getElementById("groups");
-const addAlarmButtons = document.getElementsByClassName("add-alarm");
+const addAlarmButton = document.getElementById("add-alarm");
 const alarmForm = document.getElementById("new-alarm-form-1");
+const alarmInput = document.getElementById("alarmForTest");
+const alarmTimesBoxes = document.getElementsByClassName("alarm-times");
+
 let data = new FormData();
 
 const cl = function (log) {
@@ -55,25 +58,22 @@ activateButton.addEventListener("click", function (evt) {
   makeAlarm();
 });
 
-alarmForm.addEventListener("click", function (evt) {
+addAlarmButton.addEventListener("click", function (evt) {
   evt.preventDefault();
-  cl("alarmForm was clicked");
+  cl("addAlarmButton was clicked");
   cl(evt);
-  data.append("time", document.getElementById("new-alarm-form-1").value);
-  cl(data);
+
+  cl(alarmInput.value);
+  const newTime = document.createElement("p");
+  newTime.innerText = alarmInput.value;
+  alarmTimesBoxes[0].append(newTime);
+  alarmForm.reset();
 });
 
-// groups.addEventListener("click", function (evt) {
-//   console.log("groups clicked");
-//   console.log(evt);
-//   if (evt.path.includes("button.add-alarm")) {
-//     console.log("im included");
-//   }
-// });
-
-// create add new entry button
-
 // TODO store setting
+// TODO sort alarm times
+// TODO multiple groups
+// TODO rationalize variable names
 
 // once started, check current day and time against timers
 // get current time

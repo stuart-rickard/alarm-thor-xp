@@ -29,7 +29,7 @@
   outline-color: orange;
 }
 
-.time-pill {
+.alarm-times {
   display: flexbox;
   border: solid;
   border-color: blue;
