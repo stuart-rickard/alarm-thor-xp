@@ -5,14 +5,13 @@ const alarmForm = document.getElementById("new-alarm-form-1");
 const alarmInput = document.getElementById("alarmForTest");
 const alarmTimesBoxes = document.getElementsByClassName("alarm-times");
 
-let data = new FormData();
-
 const cl = function (log) {
   console.log(log);
 };
 
+const context = new AudioContext();
+
 function sound(duration, frequency) {
-  var context = new AudioContext();
   return new Promise((resolve, reject) => {
     try {
       let oscillator = context.createOscillator();
@@ -43,15 +42,29 @@ function delay(duration) {
 }
 
 function makeAlarm() {
-  sound(200, 300)
-    .then(() => sound(100, 600))
-    .then(() => sound(100, 900))
+  sound(200, 100)
+    .then(() => delay(400))
+    .then(() => sound(200, 120))
+    .then(() => delay(400))
+    .then(() => sound(200, 150))
+    .then(() => delay(400))
     .then(() => sound(200, 300))
-    .then(() => delay(200))
+    .then(() => sound(100, 600))
+    .then(() => sound(100, 450))
+    .then(() => sound(100, 600))
+    .then(() => sound(200, 300))
+    .then(() => delay(400))
     .then(() => sound(200, 300))
     .then(() => sound(100, 600))
-    .then(() => sound(100, 900))
-    .then(() => sound(200, 300));
+    .then(() => sound(100, 450))
+    .then(() => sound(100, 600))
+    .then(() => sound(200, 300))
+    .then(() => delay(400))
+    .then(() => sound(200, 150))
+    .then(() => delay(400))
+    .then(() => sound(200, 120))
+    .then(() => delay(400))
+    .then(() => sound(200, 100));
 }
 
 activateButton.addEventListener("click", function (evt) {
@@ -61,9 +74,6 @@ activateButton.addEventListener("click", function (evt) {
 addAlarmButton.addEventListener("click", function (evt) {
   evt.preventDefault();
   cl("addAlarmButton was clicked");
-  cl(evt);
-
-  cl(alarmInput.value);
   const newTime = document.createElement("p");
   newTime.innerText = alarmInput.value;
   alarmTimesBoxes[0].append(newTime);
@@ -77,6 +87,7 @@ addAlarmButton.addEventListener("click", function (evt) {
 
 // once started, check current day and time against timers
 // get current time
+cl(Date.now());
 // compare to alarm time
 // alarm for any timers that are due
 // change their appearance
