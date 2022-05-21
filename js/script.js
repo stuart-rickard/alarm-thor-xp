@@ -4,12 +4,32 @@ const addAlarmButton = document.getElementById("add-alarm");
 const alarmForm = document.getElementById("new-alarm-form-1");
 const alarmInput = document.getElementById("alarmForTest");
 const alarmTimesBoxes = document.getElementsByClassName("alarm-times");
+const weekDaysSelector = document.getElementsByClassName("weekDays-selector");
+
+const context = new AudioContext();
 
 const cl = function (log) {
   console.log(log);
 };
 
-const context = new AudioContext();
+let settings = {
+  clockDelta: 0, // minutes
+  groups: [
+    {
+      groupActive: true,
+      activeDays: {
+        Sunday: false,
+        Monday: false,
+        Tuesday: false,
+        Wednesday: false,
+        Thursday: false,
+        Friday: false,
+        Saturday: false,
+      },
+      alarms: [],
+    },
+  ],
+};
 
 function sound(duration, frequency) {
   return new Promise((resolve, reject) => {
@@ -71,11 +91,25 @@ activateButton.addEventListener("click", function (evt) {
   makeAlarm();
 });
 
+weekDaysSelector[0].addEventListener("click", function (evt) {
+  if (evt.path[0].tagName == "LABEL") {
+    return;
+  }
+  cl("id: " + evt.path[0].getAttribute("id"));
+  cl("tagName: " + evt.path[0].tagName);
+  cl("checked: " + evt.target.checked);
+  cl(evt);
+});
+
 addAlarmButton.addEventListener("click", function (evt) {
   evt.preventDefault();
   cl("addAlarmButton was clicked");
   const newTime = document.createElement("p");
-  newTime.innerText = alarmInput.value;
+  let newAlarm = alarmInput.value;
+  newTime.innerText = newAlarm;
+  settings.groups[0].alarms.push(newAlarm);
+  cl(alarmInput.value);
+  cl(settings);
   alarmTimesBoxes[0].append(newTime);
   alarmForm.reset();
 });
@@ -86,8 +120,24 @@ addAlarmButton.addEventListener("click", function (evt) {
 // TODO rationalize variable names
 
 // once started, check current day and time against timers
-// get current time
-cl(Date.now());
-// compare to alarm time
+// check day
+// check current time is equal to or later than alarm
+
+const isEarlierThanNow = function (testedTime) {
+  let hour = testedTime[0] * 10 + testedTime[1] * 1;
+  let minute = testedTime[3] * 10 + testedTime[4] * 1;
+  let dN = new Date();
+  let nowHour = dN.getHours();
+  let nowMinute = dN.getMinutes();
+  if (hour < nowHour || (hour == nowHour && minute <= nowMinute)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 // alarm for any timers that are due
+if (isEarlierThanNow("12:26")) {
+  makeAlarm();
+}
 // change their appearance
