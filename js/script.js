@@ -1,10 +1,13 @@
-const activateButton = document.getElementById("activate");
-const groups = document.getElementById("groups");
-const addAlarmButton = document.getElementById("add-alarm");
-const alarmForm = document.getElementById("new-alarm-form-1");
-const alarmInput = document.getElementById("alarmForTest");
-const alarmTimesBoxes = document.getElementsByClassName("alarm-times");
-const weekDaysSelector = document.getElementsByClassName("weekDays-selector");
+const documentBody = document.body;
+
+// const activateButton = document.getElementById("activate");
+// const groups = document.getElementById("groups");
+// const addAlarmButton = document.getElementById("add-alarm");
+// const alarmForm = document.getElementById("new-alarm-form-1");
+// const alarmInput = document.getElementById("alarmForTest");
+// const alarmTimesBoxes = document.getElementsByClassName("alarm-times");
+const weekDaysSelectors = document.getElementsByClassName("weekDays-selector");
+const groupActiveRadios = document.getElementsByClassName("radio-buttons");
 
 const context = new AudioContext();
 
@@ -30,6 +33,8 @@ let settings = {
     },
   ],
 };
+
+let audioContextActivated = false;
 
 function sound(duration, frequency) {
   return new Promise((resolve, reject) => {
@@ -87,32 +92,75 @@ function makeAlarm() {
     .then(() => sound(200, 100));
 }
 
-activateButton.addEventListener("click", function (evt) {
-  makeAlarm();
+const proceedWith = {
+  "make-alert-sound": function () {
+    cl("hello from make alert sound");
+    audioContextActivated = true;
+    makeAlarm();
+  },
+  "data-do-is-null": function () {
+    cl("There is nothing to do for this click location.");
+  },
+  "add-alarm": function (evt) {
+    cl("addAlarmButton was clicked");
+    const newTime = document.createElement("p");
+    let newAlarm = evt.target.value;
+    newTime.innerText = newAlarm;
+    settings.groups[0].alarms.push(newAlarm);
+    cl(alarmInput.value);
+    cl(settings);
+    alarmTimesBoxes[0].append(newTime);
+    alarmForm.reset();
+  },
+};
+
+function handleClick(evt) {
+  evt.preventDefault();
+  cl("data-do is: " + evt.target.getAttribute("data-do"));
+  cl(evt);
+  let functionToDo = evt.target.getAttribute("data-do") || "data-do-is-null";
+  cl(functionToDo);
+  proceedWith[functionToDo](evt);
+}
+
+documentBody.addEventListener("click", function (evt) {
+  cl("body clicked");
+  handleClick(evt);
 });
 
-weekDaysSelector[0].addEventListener("click", function (evt) {
+// activateButton.addEventListener("click", function (evt) {
+// makeAlarm();
+// });
+
+weekDaysSelectors[0].addEventListener("click", function (evt) {
   if (evt.path[0].tagName == "LABEL") {
     return;
   }
   cl("id: " + evt.path[0].getAttribute("id"));
   cl("tagName: " + evt.path[0].tagName);
   cl("checked: " + evt.target.checked);
+  cl("day: " + evt.target.getAttribute("data-day"));
+  cl("group: " + evt.target.getAttribute("data-group"));
   cl(evt);
 });
 
-addAlarmButton.addEventListener("click", function (evt) {
-  evt.preventDefault();
-  cl("addAlarmButton was clicked");
-  const newTime = document.createElement("p");
-  let newAlarm = alarmInput.value;
-  newTime.innerText = newAlarm;
-  settings.groups[0].alarms.push(newAlarm);
-  cl(alarmInput.value);
-  cl(settings);
-  alarmTimesBoxes[0].append(newTime);
-  alarmForm.reset();
+groupActiveRadios[0].addEventListener("click", function (evt) {
+  // need to handle null responses
+  cl(evt.target.getAttribute("data-radio"));
+  // cl(evt);
 });
+
+// addAlarmButton.addEventListener("click", function (evt) {
+//   cl("addAlarmButton was clicked");
+//   const newTime = document.createElement("p");
+//   let newAlarm = alarmInput.value;
+//   newTime.innerText = newAlarm;
+//   settings.groups[0].alarms.push(newAlarm);
+//   cl(alarmInput.value);
+//   cl(settings);
+//   alarmTimesBoxes[0].append(newTime);
+//   alarmForm.reset();
+// });
 
 // TODO store setting
 // TODO sort alarm times
@@ -138,6 +186,12 @@ const isEarlierThanNow = function (testedTime) {
 
 // alarm for any timers that are due
 if (isEarlierThanNow("12:26")) {
-  makeAlarm();
+  // makeAlarm();
 }
 // change their appearance
+
+// const toDo = function () {
+//   proceedWith["make-alert-sound"]();
+// };
+
+// toDo();
