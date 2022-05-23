@@ -1,8 +1,5 @@
 const documentBody = document.body;
 
-const weekDaysSelectors = document.getElementsByClassName("weekDays-selector");
-const groupActiveRadios = document.getElementsByClassName("radio-buttons");
-
 const context = new AudioContext();
 
 const cl = function (log) {
@@ -87,24 +84,27 @@ function makeAlarm() {
 }
 
 const proceedWith = {
-  "make-alert-sound": function () {
+  "make-alert-sound": function (evt) {
     cl("hello from make alert sound");
     audioContextActivated = true;
     makeAlarm();
   },
-  "data-do-is-null": function () {
+  "data-do-is-null": function (evt) {
     cl("There is nothing to do for this click location.");
   },
   "add-alarm": function (evt) {
+    evt.preventDefault();
+    cl(evt);
     cl("addAlarmButton was clicked");
     const newTime = document.createElement("p");
-    let newAlarm = evt.target.value;
-    newTime.innerText = newAlarm;
+    let newAlarm = "Alarm time: " + evt.target.value;
+    cl(newAlarm);
+    // newTime.innerText = newAlarm || "newAlarm was null";
+    newTime.innerText = "newAlarm placeholder";
     settings.groups[0].alarms.push(newAlarm);
-    cl(alarmInput.value);
     cl(settings);
-    alarmTimesBoxes[0].append(newTime);
-    alarmForm.reset();
+    document.getElementById("group-1-alarm-times").append(newTime);
+    // alarmForm.reset();
   },
   "turn-group-on": function (evt) {
     cl("turn group on");
@@ -114,12 +114,15 @@ const proceedWith = {
   },
   "toggle-day": function (evt) {
     cl("toggle day");
+    cl(evt.path[0].tagName);
+    cl("id: " + evt.path[0].getAttribute("id"));
+    cl("tagName: " + evt.path[0].tagName);
+    cl("checked: " + evt.target.checked);
+    cl("day: " + evt.target.getAttribute("data-day"));
+    cl("group: " + evt.target.getAttribute("data-group"));
   },
   "delete-alarm": function (evt) {
     cl("delete alarm");
-  },
-  "add-alarm": function (evt) {
-    cl("add alarm");
   },
   "save-page": function (evt) {
     cl("save page");
@@ -137,7 +140,6 @@ function handleClick(evt) {
   cl("data-do is: " + evt.target.getAttribute("data-do"));
   cl(evt);
   let functionToDo = evt.target.getAttribute("data-do") || "data-do-is-null";
-  cl(functionToDo);
   proceedWith[functionToDo](evt);
 }
 
@@ -145,40 +147,6 @@ documentBody.addEventListener("click", function (evt) {
   cl("body clicked");
   handleClick(evt);
 });
-
-// activateButton.addEventListener("click", function (evt) {
-// makeAlarm();
-// });
-
-weekDaysSelectors[0].addEventListener("click", function (evt) {
-  if (evt.path[0].tagName == "LABEL") {
-    return;
-  }
-  cl("id: " + evt.path[0].getAttribute("id"));
-  cl("tagName: " + evt.path[0].tagName);
-  cl("checked: " + evt.target.checked);
-  cl("day: " + evt.target.getAttribute("data-day"));
-  cl("group: " + evt.target.getAttribute("data-group"));
-  cl(evt);
-});
-
-groupActiveRadios[0].addEventListener("click", function (evt) {
-  // need to handle null responses
-  cl(evt.target.getAttribute("data-radio"));
-  // cl(evt);
-});
-
-// addAlarmButton.addEventListener("click", function (evt) {
-//   cl("addAlarmButton was clicked");
-//   const newTime = document.createElement("p");
-//   let newAlarm = alarmInput.value;
-//   newTime.innerText = newAlarm;
-//   settings.groups[0].alarms.push(newAlarm);
-//   cl(alarmInput.value);
-//   cl(settings);
-//   alarmTimesBoxes[0].append(newTime);
-//   alarmForm.reset();
-// });
 
 // TODO store setting
 // TODO sort alarm times
