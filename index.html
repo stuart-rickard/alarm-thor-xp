@@ -8,103 +8,108 @@
   </head>
 
   <body>
-    <button id="activate" data-do="make-alert-sound">
-      click to allow alarm sounds
-    </button>
+    <button data-do="make-alert-sound">click to allow alarm sounds</button>
     <div class="clock-adjust">
       <p>adjust for clock time</p>
       <div>computer time is</div>
       <p>enter clock time</p>
-      <!-- <input
-        type="time"
-        id="alarm"s
-        name="alarm"
-        min="09:00"
-        max="18:00"
-        required
-      /> -->
+      <input type="time" id="adjust-clock-input" required />
       <p>difference is:</p>
     </div>
     <div>Minutes until next alarm:</div>
     <div class="groups" id="groups">
-      <div class="group">
+      <div class="group" id="group-1">
         <p>Group 1</p>
         <p>Turn group on or off:</p>
         <div class="radio-buttons">
           <input
             type="radio"
-            id="on-0"
+            id="on-1"
             name="active"
+            data-do="turn-group-on"
             data-radio="on"
             checked=""
           />
-          <label for="on-0">On</label>
-          <input type="radio" id="off-0" data-radio="off" name="active" />
-          <label for="off-0">Off</label>
+          <label for="on-1">On</label>
+          <input
+            type="radio"
+            id="off-1"
+            data-do="turn-group-off"
+            data-radio="off"
+            name="active"
+          />
+          <label for="off-1">Off</label>
         </div>
         <p>Select active days</p>
         <div class="weekDays-selector">
           <input
             type="checkbox"
-            id="weekday-sun-0"
+            id="weekday-sun-1"
             class="weekday"
+            data-do="toggle-day"
             data-day="Sunday"
             data-group="1"
           />
-          <label for="weekday-sun-0">S</label>
+          <label for="weekday-sun-1">S</label>
           <input
             type="checkbox"
-            id="weekday-mon-0"
+            id="weekday-mon-1"
             class="weekday"
+            data-do="toggle-day"
             data-day="Monday"
             data-group="1"
           />
-          <label for="weekday-mon-0">M</label>
+          <label for="weekday-mon-1">M</label>
           <input
             type="checkbox"
-            id="weekday-tue-0"
+            id="weekday-tue-1"
             class="weekday"
+            data-do="toggle-day"
             data-day="Tuesday"
             data-group="1"
           />
-          <label for="weekday-tue-0">T</label>
+          <label for="weekday-tue-1">T</label>
           <input
             type="checkbox"
-            id="weekday-wed-0"
+            id="weekday-wed-1"
             class="weekday"
+            data-do="toggle-day"
             data-day="Wednesday"
             data-group="1"
           />
-          <label for="weekday-wed-0">W</label>
+          <label for="weekday-wed-1">W</label>
           <input
             type="checkbox"
-            id="weekday-thu-0"
+            id="weekday-thu-1"
             class="weekday"
+            data-do="toggle-day"
             data-day="Thursday"
             data-group="1"
           />
-          <label for="weekday-thu-0">T</label>
+          <label for="weekday-thu-1">T</label>
           <input
             type="checkbox"
-            id="weekday-fri-0"
+            id="weekday-fri-1"
             class="weekday"
+            data-do="toggle-day"
             data-day="Friday"
             data-group="1"
           />
-          <label for="weekday-fri-0">F</label>
+          <label for="weekday-fri-1">F</label>
           <input
             type="checkbox"
-            id="weekday-sat-0"
+            id="weekday-sat-1"
             class="weekday"
+            data-do="toggle-day"
             data-day="Saturday"
             data-group="1"
           />
-          <label for="weekday-sat-0">S</label>
+          <label for="weekday-sat-1">S</label>
         </div>
         <div class="alarm-times">
           <p>2:30 PM alarm [list days]-- minutes until alarm:</p>
         </div>
-        <button class="delete-alarm">x delete alarm</button>
+        <button data-do="delete-alarm">x delete alarm</button>
         <form id="new-alarm-form-1">
           <label for="alarm">Choose a time for your alarm:</label>
           <input
@@ -117,56 +122,15 @@
           <button id="add-alarm" data-do="add-alarm">+ add alarm</button>
         </form>
       </div>
-
-      <!-- <div class="group">
-        <p>Group 2</p>
-        <p>Turn group on or off:</p>
-        <div class="radio-buttons">
-          <input type="radio" id="on" name="active" />
-          <label for="on">On</label>
-          <input type="radio" id="off" name="active" />
-          <label for="off">Off</label>
-        </div>
-        <p>Select active days</p>
-        <div class="weekDays-selector">
-          <input type="checkbox" id="weekday-sun" class="weekday" />
-          <label for="weekday-sun">S</label>
-          <input type="checkbox" id="weekday-mon" class="weekday" />
-          <label for="weekday-mon">M</label>
-          <input type="checkbox" id="weekday-tue" class="weekday" />
-          <label for="weekday-tue">T</label>
-          <input type="checkbox" id="weekday-wed" class="weekday" />
-          <label for="weekday-wed">W</label>
-          <input type="checkbox" id="weekday-thu" class="weekday" />
-          <label for="weekday-thu">T</label>
-          <input type="checkbox" id="weekday-fri" class="weekday" />
-          <label for="weekday-fri">F</label>
-          <input type="checkbox" id="weekday-sat" class="weekday" />
-          <label for="weekday-sat">S</label>
-        </div>
-        <div class="time-pill">
-          3:30 PM alarm [list days] -- minutes until alarm:
-        </div>
-        <label for="alarm">Choose a time for your alarm:</label>
-        <input
-          type="time"
-          id="alarm2"
-          name="alarm"
-          min="09:00"
-          max="18:00"
-          required
-        />
-        <button class="add-alarm">+ add alarm</button>
-      </div> -->
     </div>
 
-    <button id="add-group">+ add group</button>
+    <button data-do="add-group">+ add group</button>
     <div>
       <p>Status</p>
       <p>All changes saved</p>
       <p>Page has changed</p>
-      <button id="revise-button">Revise Page</button>
-      <button id="save-as-button">Save as New Page</button>
+      <button data-do="save-page">Save Page</button>
+      <button data-do="save-as-new-page">Save as New Page</button>
     </div>
     <script src="js/script.js"></script>
   </body>

@@ -1,11 +1,5 @@
 const documentBody = document.body;
 
-// const activateButton = document.getElementById("activate");
-// const groups = document.getElementById("groups");
-// const addAlarmButton = document.getElementById("add-alarm");
-// const alarmForm = document.getElementById("new-alarm-form-1");
-// const alarmInput = document.getElementById("alarmForTest");
-// const alarmTimesBoxes = document.getElementsByClassName("alarm-times");
 const weekDaysSelectors = document.getElementsByClassName("weekDays-selector");
 const groupActiveRadios = document.getElementsByClassName("radio-buttons");
 
@@ -112,10 +106,34 @@ const proceedWith = {
     alarmTimesBoxes[0].append(newTime);
     alarmForm.reset();
   },
+  "turn-group-on": function (evt) {
+    cl("turn group on");
+  },
+  "turn-group-off": function (evt) {
+    cl("turn group off");
+  },
+  "toggle-day": function (evt) {
+    cl("toggle day");
+  },
+  "delete-alarm": function (evt) {
+    cl("delete alarm");
+  },
+  "add-alarm": function (evt) {
+    cl("add alarm");
+  },
+  "save-page": function (evt) {
+    cl("save page");
+  },
+  "save-as-new-page": function (evt) {
+    cl("save as new page");
+  },
+  "add-group": function (evt) {
+    cl("add group");
+  },
 };
 
 function handleClick(evt) {
-  evt.preventDefault();
+  // evt.preventDefault();
   cl("data-do is: " + evt.target.getAttribute("data-do"));
   cl(evt);
   let functionToDo = evt.target.getAttribute("data-do") || "data-do-is-null";
