@@ -1,0 +1,88 @@
+add alarm with time to DOM
+  trigger webpage has changed
+  get alarm time
+  create new alarm element
+    set data attributes for group and time
+    append to DOM
+  determine next alarm
+
+coding of id's - so that we can easily access the element
+  make independent of purpose...
+  location-type-specific e.g.: grp1-div-1430
+
+update data fields to control style?
+  // can css look at data attribute?
+
+create new group
+  trigger webpage has changed
+  create group element
+    needs to be next number
+  create each element within group
+    with appropriate data attributes
+  update status object
+  determine next alarm
+
+determine next alarm
+    if there's no next alarm, set noNextAlarm flag
+
+pulse
+  if time < nextAlarm || no next alarm, wait for next pulse
+    else
+      sound alarm
+      determine next alarm
+  display time until next alarm
+    subtract adjusted clock time from next alarm time
+    display the difference  
+
+turn group on or off
+  check data fields
+  update status object
+  determine next alarm
+
+change active days
+  check data fields
+  update status object
+  determine next alarm
+
+delete alarm
+  check data fields
+  get element to be deleted
+  delete that element
+
+delete group
+  check data fields
+  get element (group) to be deleted
+  delete that group
+
+styling so that inactive look inactive and v/v
+
+// within saved file
+  on load, create activate condition
+
+activate
+  turn on audioContext
+  update status object
+    get data from all groups and alarms
+    update the status object
+  determine next alarm (see above)
+  // unhide elements?
+  check whether clock time is correct?
+
+// sort alarm times
+
+instructions to save webpage
+
+cleanup
+  variable names
+  not needed attributes
+    // is is better to use id rather than multiple data attributes?
+  move code around
+
+adjust for clock time
+  take entry of current clock time
+  compare to computer time
+  update adjust alarm time in status object
+  trigger webpage has changed
+  determine next alarm
+
+

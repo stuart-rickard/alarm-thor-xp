@@ -8,6 +8,9 @@ const cl = function (log) {
 
 let settings = {
   clockDelta: 0, // minutes
+  siteChanged: false,
+  timeOfNextAlarmToday: 2359,
+  timeToNextAlarm: 0, // seconds
   groups: [
     {
       groupActive: true,
@@ -33,14 +36,9 @@ function sound(duration, frequency) {
       let oscillator = context.createOscillator();
       oscillator.type = "sine";
       oscillator.connect(context.destination);
-
-      // Set the oscillator frequency in hertz
       oscillator.frequency.value = frequency;
-
-      // Start audio with the desired duration
       oscillator.start(context.currentTime);
       oscillator.stop(context.currentTime + duration * 0.001);
-
       // Resolve the promise when the sound is finished
       oscillator.onended = () => {
         resolve();
@@ -96,15 +94,17 @@ const proceedWith = {
     evt.preventDefault();
     cl(evt);
     cl("addAlarmButton was clicked");
-    const newTime = document.createElement("p");
-    let newAlarm = "Alarm time: " + evt.target.value;
-    cl(newAlarm);
-    // newTime.innerText = newAlarm || "newAlarm was null";
-    newTime.innerText = "newAlarm placeholder";
-    settings.groups[0].alarms.push(newAlarm);
-    cl(settings);
-    document.getElementById("group-1-alarm-times").append(newTime);
-    // alarmForm.reset();
+    let timeInput = document.getElementById("alarmForTest");
+    let newAlarmTime = timeInput.value;
+    if (newAlarmTime) {
+      const newTime = document.createElement("p");
+      let newAlarm = "Alarm time: " + newAlarmTime;
+      newTime.innerText = newAlarm;
+      settings.groups[0].alarms.push(newAlarm);
+      cl(settings.groups);
+      document.getElementById("group-1-alarm-times").append(newTime);
+      // alarmForm.reset();
+    }
   },
   "turn-group-on": function (evt) {
     cl("turn group on");

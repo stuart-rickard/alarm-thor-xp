@@ -8,7 +8,7 @@
   </head>
 
   <body>
-    <button data-do="make-alert-sound">click to allow alarm sounds</button>
+    <button data-do="make-alert-sound">activate alarms</button>
     <div class="clock-adjust">
       <p>adjust for clock time</p>
       <div>computer time is</div>
@@ -16,7 +16,7 @@
       <input type="time" id="adjust-clock-input" required />
       <p>difference is:</p>
     </div>
-    <div>Minutes until next alarm:</div>
+    <div>Time until next alarm:</div>
     <div class="groups" id="groups">
       <div class="group" id="group-1">
         <p>Group 1</p>
@@ -25,7 +25,7 @@
           <input
             type="radio"
             id="on-1"
-            name="active"
+            name="active-1"
             data-do="turn-group-on"
             data-radio="on"
             checked=""
@@ -36,7 +36,7 @@
             id="off-1"
             data-do="turn-group-off"
             data-radio="off"
-            name="active"
+            name="active-1"
           />
           <label for="off-1">Off</label>
         </div>
@@ -49,6 +49,7 @@
             data-do="toggle-day"
             data-day="Sunday"
             data-group="1"
+            data-checked="no"
           />
           <label for="weekday-sun-1">S</label>
           <input
@@ -58,6 +59,7 @@
             data-do="toggle-day"
             data-day="Monday"
             data-group="1"
+            data-checked="no"
           />
           <label for="weekday-mon-1">M</label>
           <input
@@ -67,6 +69,7 @@
             data-do="toggle-day"
             data-day="Tuesday"
             data-group="1"
+            data-checked="no"
           />
           <label for="weekday-tue-1">T</label>
           <input
@@ -76,6 +79,7 @@
             data-do="toggle-day"
             data-day="Wednesday"
             data-group="1"
+            data-checked="no"
           />
           <label for="weekday-wed-1">W</label>
           <input
@@ -85,6 +89,7 @@
             data-do="toggle-day"
             data-day="Thursday"
             data-group="1"
+            data-checked="no"
           />
           <label for="weekday-thu-1">T</label>
           <input
@@ -94,6 +99,7 @@
             data-do="toggle-day"
             data-day="Friday"
             data-group="1"
+            data-checked="no"
           />
           <label for="weekday-fri-1">F</label>
           <input
@@ -103,13 +109,18 @@
             data-do="toggle-day"
             data-day="Saturday"
             data-group="1"
+            data-checked="no"
           />
           <label for="weekday-sat-1">S</label>
         </div>
         <div class="alarm-times" id="group-1-alarm-times">
-          <p>2:30 PM alarm [list days]-- minutes until alarm:</p>
+          <div data-group="1" data-time="14:30">
+            <p data-group="1" data-time="14:30">2:30 PM alarm EXAMPLE</p>
+            <button data-do="delete-alarm" data-group="1" data-time="14:30">
+              x delete alarm
+            </button>
+          </div>
         </div>
-        <button data-do="delete-alarm">x delete alarm</button>
         <form id="new-alarm-form-1">
           <label for="alarm">Choose a time for your alarm:</label>
           <input
@@ -123,14 +134,9 @@
         </form>
       </div>
     </div>
-
     <button data-do="add-group">+ add group</button>
     <div>
-      <p>Status</p>
-      <p>All changes saved</p>
-      <p>Page has changed</p>
-      <button data-do="save-page">Save Page</button>
-      <button data-do="save-as-new-page">Save as New Page</button>
+      <p>Page has changed -- be sure to save!</p>
     </div>
     <script src="js/script.js"></script>
   </body>
