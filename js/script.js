@@ -81,6 +81,33 @@ function makeAlarm() {
     .then(() => sound(200, 100));
 }
 
+function convertToAMPM(fourCharTime) {
+  let hourString = fourCharTime[0] + fourCharTime[1];
+  // AM times
+  if (hourString < 12) {
+    // Midnight
+    if (hourString == 0) {
+      let ampmTime = "12:" + fourCharTime[2] + fourCharTime[3] + " AM";
+      return ampmTime;
+      // After midnight
+    } else {
+      let ampmTime =
+        hourString + ":" + fourCharTime[2] + fourCharTime[3] + " AM";
+      return ampmTime;
+    }
+    // PM times
+  } else {
+    hour = Number.parseInt(hourString);
+    // Reduce hour by 12, except noon hour
+    if (hour > 12) {
+      hour = hour - 12;
+    }
+    let ampmTime =
+      hour.toString() + ":" + fourCharTime[2] + fourCharTime[3] + " PM";
+    return ampmTime;
+  }
+}
+
 const proceedWith = {
   "make-alert-sound": function (evt) {
     cl("hello from make alert sound");
@@ -92,8 +119,8 @@ const proceedWith = {
   },
   "add-alarm": function (evt) {
     evt.preventDefault();
-    cl(evt);
-    cl("addAlarmButton was clicked");
+    // cl(evt);
+    // cl("addAlarmButton was clicked");
     let timeInput = document.getElementById("alarmForTest");
     let newAlarmTime = timeInput.value;
     if (newAlarmTime) {
@@ -103,7 +130,7 @@ const proceedWith = {
       settings.groups[0].alarms.push(newAlarm);
       cl(settings.groups);
       document.getElementById("group-1-alarm-times").append(newTime);
-      // alarmForm.reset();
+      document.getElementById("new-alarm-form-1").reset();
     }
   },
   "turn-group-on": function (evt) {
@@ -181,3 +208,11 @@ if (isEarlierThanNow("12:26")) {
 // };
 
 // toDo();
+
+cl(convertToAMPM("0000"));
+cl(convertToAMPM("0415"));
+cl(convertToAMPM("1159"));
+cl(convertToAMPM("1200"));
+cl(convertToAMPM("1301"));
+cl(convertToAMPM("2200"));
+cl(convertToAMPM("2359"));
