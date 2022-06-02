@@ -11,21 +11,21 @@ let settings = {
   siteChanged: false,
   timeOfNextAlarmToday: 2359,
   timeToNextAlarm: 0, // seconds
-  groups: [
-    {
+  groups: {
+    "group-1": {
       groupActive: true,
       activeDays: {
-        Sunday: false,
-        Monday: false,
-        Tuesday: false,
-        Wednesday: false,
-        Thursday: false,
-        Friday: false,
-        Saturday: false,
+        sun: false,
+        mon: true,
+        tue: true,
+        wed: true,
+        thu: true,
+        fri: true,
+        sat: false,
       },
       alarms: [],
     },
-  ],
+  },
 };
 
 let audioContextActivated = false;
@@ -108,55 +108,91 @@ function convertToAMPM(fourCharTime) {
   }
 }
 
+function convertToFourCharTime(fiveCharTime) {
+  let fourCharTime = fiveCharTime.replace(":", "");
+  return fourCharTime;
+}
+
+function groupOf(idString) {
+  let secondHyphenIndex = idString.indexOf("-", 6);
+  let groupString = idString.slice(0, secondHyphenIndex);
+  cl(groupString);
+  return groupString;
+}
+
+function timeToNextAlarm() {
+  for (group in settings.groups) {
+    cl(group);
+  }
+}
+
 const proceedWith = {
   "make-alert-sound": function (evt) {
     cl("hello from make alert sound");
     audioContextActivated = true;
     makeAlarm();
   },
+
   "data-do-is-null": function (evt) {
     cl("There is nothing to do for this click location.");
   },
+
   "add-alarm": function (evt) {
     evt.preventDefault();
-    // cl(evt);
-    // cl("addAlarmButton was clicked");
-    let timeInput = document.getElementById("alarmForTest");
-    let newAlarmTime = timeInput.value;
-    if (newAlarmTime) {
-      const newTime = document.createElement("p");
-      let newAlarm = "Alarm time: " + newAlarmTime;
-      newTime.innerText = newAlarm;
-      settings.groups[0].alarms.push(newAlarm);
-      cl(settings.groups);
-      document.getElementById("group-1-alarm-times").append(newTime);
-      document.getElementById("new-alarm-form-1").reset();
+    let group = groupOf(evt.target.id);
+    let timeInput = document.getElementById(`${group}-new-alarm-input`);
+    let newAlarmTimeFiveChar = timeInput.value;
+    if (newAlarmTimeFiveChar) {
+      // Add time to status object
+      let newAlarmTimeFourChar = convertToFourCharTime(newAlarmTimeFiveChar);
+      settings.groups[group].alarms.push(newAlarmTimeFourChar);
+      // Update DOM to display new time
+      const newAlarmTimeEl = document.createElement("p");
+      let newAlarmText = "Alarm time: " + convertToAMPM(newAlarmTimeFourChar);
+      newAlarmTimeEl.innerText = newAlarmText;
+      document.getElementById(`${group}-alarm-times`).append(newAlarmTimeEl);
+      document.getElementById(`${group}-new-alarm-form`).reset();
     }
   },
+
   "turn-group-on": function (evt) {
     cl("turn group on");
+    cl(evt);
+    let group = groupOf(evt.target.id);
+    if (evt.target.checked) {
+      settings.groups[group].groupActive = true;
+    }
   },
+
   "turn-group-off": function (evt) {
     cl("turn group off");
+    cl(evt);
+    let group = groupOf(evt.target.id);
+    if (evt.target.checked) {
+      settings.groups[group].groupActive = false;
+    }
   },
+
   "toggle-day": function (evt) {
+    cl(evt);
     cl("toggle day");
-    cl(evt.path[0].tagName);
-    cl("id: " + evt.path[0].getAttribute("id"));
-    cl("tagName: " + evt.path[0].tagName);
-    cl("checked: " + evt.target.checked);
-    cl("day: " + evt.target.getAttribute("data-day"));
-    cl("group: " + evt.target.getAttribute("data-group"));
+    let group = groupOf(evt.target.id);
+    let day = evt.target.id.slice(-3);
+    settings.groups[group].activeDays[day] = evt.target.checked;
   },
+
   "delete-alarm": function (evt) {
     cl("delete alarm");
   },
+
   "save-page": function (evt) {
     cl("save page");
   },
+
   "save-as-new-page": function (evt) {
     cl("save as new page");
   },
+
   "add-group": function (evt) {
     cl("add group");
   },
@@ -165,7 +201,7 @@ const proceedWith = {
 function handleClick(evt) {
   // evt.preventDefault();
   cl("data-do is: " + evt.target.getAttribute("data-do"));
-  cl(evt);
+  // cl(evt);
   let functionToDo = evt.target.getAttribute("data-do") || "data-do-is-null";
   proceedWith[functionToDo](evt);
 }
@@ -209,10 +245,4 @@ if (isEarlierThanNow("12:26")) {
 
 // toDo();
 
-cl(convertToAMPM("0000"));
-cl(convertToAMPM("0415"));
-cl(convertToAMPM("1159"));
-cl(convertToAMPM("1200"));
-cl(convertToAMPM("1301"));
-cl(convertToAMPM("2200"));
-cl(convertToAMPM("2359"));
+cl(convertToFourCharTime("21:34"));
