@@ -11,6 +11,7 @@ let settings = {
   siteChanged: false,
   timeOfNextAlarmToday: 2359,
   timeToNextAlarm: 0, // seconds
+  pulsePeriod: 1, // seconds
   groups: {
     "group-1": {
       groupActive: true,
@@ -29,6 +30,16 @@ let settings = {
 };
 
 let audioContextActivated = false;
+
+let dayStringAssign = {
+  0: "sun",
+  1: "mon",
+  2: "tue",
+  3: "wed",
+  4: "thu",
+  5: "fri",
+  6: "sat",
+};
 
 function sound(duration, frequency) {
   return new Promise((resolve, reject) => {
@@ -121,12 +132,40 @@ function groupOf(idString) {
 }
 
 function timeToNextAlarm() {
+  let dN = new Date();
+  let nowHour = dN.getHours();
+  let nowMinute = dN.getMinutes();
+  let nowTimeFourChar = nowHour.toString() + nowMinute.toString();
+  cl(nowTimeFourChar);
+  let nowDay = dN.getDay();
+  cl(nowDay);
+  nowDay = dayStringAssign[nowDay];
+  cl(nowDay);
+
   for (group in settings.groups) {
     cl(group);
+    if (settings.groups[group].groupActive) {
+      cl("group is active");
+      if (settings.groups[group].activeDays[nowDay]) {
+        cl("day is active");
+        for (let i = 0; i < settings.groups[group].alarms.length; i++) {
+          // TODO update code below
+          if (hour < nowHour || (hour == nowHour && minute <= nowMinute)) {
+            cl("before");
+          } else {
+            cl("after");
+          }
+        }
+      }
+    }
   }
 }
 
 const proceedWith = {
+  "next-alarm": function () {
+    timeToNextAlarm();
+  },
+
   "make-alert-sound": function (evt) {
     cl("hello from make alert sound");
     audioContextActivated = true;
@@ -245,4 +284,4 @@ if (isEarlierThanNow("12:26")) {
 
 // toDo();
 
-cl(convertToFourCharTime("21:34"));
+timeToNextAlarm();
