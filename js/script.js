@@ -9,8 +9,13 @@ const cl = function (log) {
 let settings = {
   clockDelta: 0, // minutes
   siteChanged: false,
-  timeOfNextAlarmToday: 2359,
+  timeOfNextAlarmToday: false, // false initially and when there's no alarm in the future today
   timeToNextAlarm: 0, // seconds
+  lastAlarm: {
+    // initially, a time in the past
+    date: "200000",
+    time: "0000",
+  },
   pulsePeriod: 1, // seconds
   groups: {
     "group-1": {
@@ -124,6 +129,15 @@ function convertToFourCharTime(fiveCharTime) {
   return fourCharTime;
 }
 
+function convertToSixCharDate(date) {
+  let year = date.getFullYear();
+  let month = date.getMonth();
+  let monthTwoChar =
+    month + 1 < 10 ? (month + 1).toString() : "0" + (month + 1).toString();
+  let day = date.getDay();
+  return year.toString().slice(-2) + monthTwoChar + day.toString();
+}
+
 function groupOf(idString) {
   let secondHyphenIndex = idString.indexOf("-", 6);
   let groupString = idString.slice(0, secondHyphenIndex);
@@ -135,6 +149,7 @@ function timeToNextAlarm() {
   let dN = new Date();
   let nowHour = dN.getHours();
   let nowMinute = dN.getMinutes();
+  let nowSeconds = dN.getSeconds();
   let nowTimeFourChar = nowHour.toString() + nowMinute.toString();
   cl(nowTimeFourChar);
   let nowDay = dN.getDay();
@@ -149,16 +164,46 @@ function timeToNextAlarm() {
       if (settings.groups[group].activeDays[nowDay]) {
         cl("day is active");
         for (let i = 0; i < settings.groups[group].alarms.length; i++) {
-          // TODO update code below
-          if (hour < nowHour || (hour == nowHour && minute <= nowMinute)) {
-            cl("before");
+          let alarmToTest = settings.groups[group].alarms[i];
+          if (alarmToTest > nowTimeFourChar) {
+            cl("in future");
+            if (
+              alarmToTest <
+                (settings.timeOfNextAlarmToday
+                  ? settings.timeOfNextAlarmToday
+                  : "2401") ||
+              !settings.timeOfNextAlarmToday
+            )
+              settings.timeOfNextAlarmToday = alarmToTest;
+            // TODO deal with new day and with restart on same day
           } else {
-            cl("after");
+            if ((alarmToTest = nowTimeFourChar)) {
+              cl("alarm is this minute");
+              let dateNowSixChar = convertToSixCharDate(dN);
+              cl(dateNowSixChar);
+              if (
+                settings.lastAlarm.date != dateNowSixChar ||
+                settings.lastAlarm.time != alarmToTest
+              ) {
+                settings.lastAlarm.date = dateNowSixChar;
+                settings.lastAlarm.time = alarmToTest;
+                makeAlarm();
+              }
+            } else {
+              cl("already happened");
+            }
           }
         }
       }
     }
   }
+  cl("next alarm is: ");
+  cl(settings.timeOfNextAlarmToday);
+  // TODO improve this
+  // settings.timeToNextAlarm =
+  //   settings.timeOfNextAlarmToday ||
+  //   settings.timeOfNextAlarmToday.slice(0, 1) - nowHour;
+  cl(settings.timeToNextAlarm);
 }
 
 const proceedWith = {
