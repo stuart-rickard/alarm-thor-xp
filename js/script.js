@@ -115,7 +115,7 @@ function convertToAMPM(fourCharTime) {
     }
     // PM times
   } else {
-    hour = Number.parseInt(hourString);
+    hour = Number(hourString);
     // Reduce hour by 12, except noon hour
     if (hour > 12) {
       hour = hour - 12;
@@ -158,12 +158,59 @@ function groupOf(idString) {
   return groupString;
 }
 
+function secondsToNextAlarm(date) {
+  let nowHour = date.getHours();
+  cl("***");
+  cl(nowHour);
+  let nowMinute = date.getMinutes();
+  let nowSeconds = date.getSeconds();
+  let nextAlarm = false;
+  // let nextAlarm = settings.timeOfNextAlarmToday;
+  cl(nextAlarm);
+  if (nextAlarm) {
+    cl(Number(nextAlarm.slice(0, 2)));
+    // compare
+    // hours
+    let deltaHours = Number(nextAlarm.slice(0, 2)) - nowHour;
+    cl(deltaHours);
+    // minutes
+    let deltaMinutes =
+      Number(nextAlarm.slice(-2)) - nowMinute - (nowSeconds ? 1 : 0);
+    // seconds
+    let deltaSeconds = 60 - nowSeconds;
+    // convert
+    let deltaHoursString =
+      deltaHours < 10
+        ? deltaHours == 0
+          ? "00"
+          : "0" + deltaHours.toString()
+        : deltaHours.toString();
+    let deltaMinutesString =
+      deltaMinutes < 10
+        ? deltaMinutes == 0
+          ? "00"
+          : "0" + deltaMinutes.toString()
+        : deltaMinutes.toString();
+    let deltaSecondsString =
+      deltaSeconds < 10
+        ? deltaSeconds == 0
+          ? "00"
+          : "0" + deltaSeconds.toString()
+        : deltaSeconds.toString();
+    let countDownTime =
+      deltaHoursString + ":" + deltaMinutesString + ":" + deltaSecondsString;
+    return countDownTime;
+  } else {
+    return "No alarm set for the rest of today.";
+  }
+}
+
 function timeToNextAlarm() {
   settings.timeOfNextAlarmToday = false; // reset next alarm time
   let dN = new Date();
-  let nowHour = dN.getHours();
-  let nowMinute = dN.getMinutes();
-  let nowSeconds = dN.getSeconds();
+  // let nowHour = dN.getHours();
+  // let nowMinute = dN.getMinutes();
+  // let nowSeconds = dN.getSeconds();
   let nowTimeFourChar = convertDateToFourCharTime(dN);
   cl(nowTimeFourChar);
   let nowDay = dN.getDay();
@@ -178,7 +225,7 @@ function timeToNextAlarm() {
       if (settings.groups[group].activeDays[nowDay]) {
         cl("day is active");
 
-        for (i = 0; i < settings.groups[group].alarms.length; i++) {
+        for (let i = 0; i < settings.groups[group].alarms.length; i++) {
           alarmToTest = settings.groups[group].alarms[i];
           if (alarmToTest > nowTimeFourChar) {
             cl(alarmToTest);
@@ -223,10 +270,7 @@ function timeToNextAlarm() {
   }
   cl("next alarm is: ");
   cl(settings.timeOfNextAlarmToday);
-  // TODO improve this
-  // settings.timeToNextAlarm =
-  //   settings.timeOfNextAlarmToday ||
-  //   settings.timeOfNextAlarmToday.slice(0, 1) - nowHour;
+  settings.timeToNextAlarm = secondsToNextAlarm(dN);
   cl(settings.timeToNextAlarm);
 }
 
