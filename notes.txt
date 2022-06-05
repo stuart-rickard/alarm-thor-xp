@@ -78,6 +78,9 @@ cleanup
     // is is better to use id rather than multiple data attributes?
   move code around
 
+
+
+
 adjust for clock time
   take entry of current clock time
   compare to computer time

@@ -16,7 +16,7 @@ let settings = {
     date: "200000",
     time: "0000",
   },
-  pulsePeriod: 1, // seconds
+  pulsePeriod: 1, // seconds; must be less than 60
   groups: {
     "group-1": {
       groupActive: true,
@@ -98,6 +98,8 @@ function makeAlarm() {
 }
 
 function convertToAMPM(fourCharTime) {
+  // TODO deal with new day and with restart on same day
+
   let hourString = fourCharTime[0] + fourCharTime[1];
   // AM times
   if (hourString < 12) {
@@ -133,9 +135,20 @@ function convertToSixCharDate(date) {
   let year = date.getFullYear();
   let month = date.getMonth();
   let monthTwoChar =
-    month + 1 < 10 ? (month + 1).toString() : "0" + (month + 1).toString();
+    month + 1 < 10 ? "0" + (month + 1).toString() : (month + 1).toString();
   let day = date.getDay();
-  return year.toString().slice(-2) + monthTwoChar + day.toString();
+  let dayTwoChar = day < 10 ? "0" + day.toString() : day.toString();
+  return year.toString().slice(-2) + monthTwoChar + dayTwoChar;
+}
+
+function convertDateToFourCharTime(date) {
+  let nowHour = date.getHours();
+  let nowMinute = date.getMinutes();
+  let hourTwoChar =
+    nowHour < 10 ? "0" + nowHour.toString() : nowHour.toString();
+  let minuteTwoChar =
+    nowMinute < 10 ? "0" + nowMinute.toString() : nowMinute.toString();
+  return hourTwoChar + minuteTwoChar;
 }
 
 function groupOf(idString) {
@@ -146,16 +159,17 @@ function groupOf(idString) {
 }
 
 function timeToNextAlarm() {
+  settings.timeOfNextAlarmToday = false; // reset next alarm time
   let dN = new Date();
   let nowHour = dN.getHours();
   let nowMinute = dN.getMinutes();
   let nowSeconds = dN.getSeconds();
-  let nowTimeFourChar = nowHour.toString() + nowMinute.toString();
+  let nowTimeFourChar = convertDateToFourCharTime(dN);
   cl(nowTimeFourChar);
   let nowDay = dN.getDay();
-  cl(nowDay);
   nowDay = dayStringAssign[nowDay];
   cl(nowDay);
+  let alarmToTest = "";
 
   for (group in settings.groups) {
     cl(group);
@@ -163,22 +177,31 @@ function timeToNextAlarm() {
       cl("group is active");
       if (settings.groups[group].activeDays[nowDay]) {
         cl("day is active");
-        for (let i = 0; i < settings.groups[group].alarms.length; i++) {
-          let alarmToTest = settings.groups[group].alarms[i];
+
+        for (i = 0; i < settings.groups[group].alarms.length; i++) {
+          alarmToTest = settings.groups[group].alarms[i];
           if (alarmToTest > nowTimeFourChar) {
+            cl(alarmToTest);
             cl("in future");
+            cl(
+              settings.timeOfNextAlarmToday
+                ? settings.timeOfNextAlarmToday
+                : "2401"
+            );
             if (
               alarmToTest <
-                (settings.timeOfNextAlarmToday
-                  ? settings.timeOfNextAlarmToday
-                  : "2401") ||
-              !settings.timeOfNextAlarmToday
+              (settings.timeOfNextAlarmToday
+                ? settings.timeOfNextAlarmToday
+                : "2401") // if timeOfNextAlarmToday is false, compare to "2401", which will always be true
             )
               settings.timeOfNextAlarmToday = alarmToTest;
+            cl(settings.timeOfNextAlarmToday);
             // TODO deal with new day and with restart on same day
           } else {
-            if ((alarmToTest = nowTimeFourChar)) {
+            if (alarmToTest == nowTimeFourChar) {
+              cl(alarmToTest);
               cl("alarm is this minute");
+              cl(nowTimeFourChar);
               let dateNowSixChar = convertToSixCharDate(dN);
               cl(dateNowSixChar);
               if (
@@ -190,6 +213,7 @@ function timeToNextAlarm() {
                 makeAlarm();
               }
             } else {
+              cl(alarmToTest);
               cl("already happened");
             }
           }
@@ -233,6 +257,7 @@ const proceedWith = {
       // Update DOM to display new time
       const newAlarmTimeEl = document.createElement("p");
       let newAlarmText = "Alarm time: " + convertToAMPM(newAlarmTimeFourChar);
+      // TODO: AM times show up with 0, but pm times don't
       newAlarmTimeEl.innerText = newAlarmText;
       document.getElementById(`${group}-alarm-times`).append(newAlarmTimeEl);
       document.getElementById(`${group}-new-alarm-form`).reset();
