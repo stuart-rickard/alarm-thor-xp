@@ -1,4 +1,7 @@
+// TODO CHECK FOR SLICE ERRORS
+
 const documentBody = document.body;
+const countdownEl = document.getElementById("countdown");
 
 const context = new AudioContext();
 
@@ -164,8 +167,9 @@ function secondsToNextAlarm(date) {
   cl(nowHour);
   let nowMinute = date.getMinutes();
   let nowSeconds = date.getSeconds();
-  let nextAlarm = false;
-  // let nextAlarm = settings.timeOfNextAlarmToday;
+  // TODO - resolve line below.
+  // let nextAlarm = false;
+  let nextAlarm = settings.timeOfNextAlarmToday;
   cl(nextAlarm);
   if (nextAlarm) {
     cl(Number(nextAlarm.slice(0, 2)));
@@ -272,6 +276,7 @@ function timeToNextAlarm() {
   cl(settings.timeOfNextAlarmToday);
   settings.timeToNextAlarm = secondsToNextAlarm(dN);
   cl(settings.timeToNextAlarm);
+  countdownEl.innerText = "Time until next alarm: " + settings.timeToNextAlarm;
 }
 
 const proceedWith = {
@@ -373,23 +378,23 @@ documentBody.addEventListener("click", function (evt) {
 // check day
 // check current time is equal to or later than alarm
 
-const isEarlierThanNow = function (testedTime) {
-  let hour = testedTime[0] * 10 + testedTime[1] * 1;
-  let minute = testedTime[3] * 10 + testedTime[4] * 1;
-  let dN = new Date();
-  let nowHour = dN.getHours();
-  let nowMinute = dN.getMinutes();
-  if (hour < nowHour || (hour == nowHour && minute <= nowMinute)) {
-    return true;
-  } else {
-    return false;
-  }
-};
+// const isEarlierThanNow = function (testedTime) {
+//   let hour = testedTime[0] * 10 + testedTime[1] * 1;
+//   let minute = testedTime[3] * 10 + testedTime[4] * 1;
+//   let dN = new Date();
+//   let nowHour = dN.getHours();
+//   let nowMinute = dN.getMinutes();
+//   if (hour < nowHour || (hour == nowHour && minute <= nowMinute)) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// };
 
 // alarm for any timers that are due
-if (isEarlierThanNow("12:26")) {
-  // makeAlarm();
-}
+// if (isEarlierThanNow("12:26")) {
+//   // makeAlarm();
+// }
 // change their appearance
 
 // const toDo = function () {
@@ -398,4 +403,4 @@ if (isEarlierThanNow("12:26")) {
 
 // toDo();
 
-timeToNextAlarm();
+// timeToNextAlarm();
