@@ -19,7 +19,7 @@ let settings = {
     date: "200000",
     time: "0000",
   },
-  pulsePeriod: 1, // seconds; must be less than 60
+  pulsePeriod: 5, // seconds; must be less than 60
   groups: {
     "group-1": {
       groupActive: true,
@@ -157,27 +157,22 @@ function convertDateToFourCharTime(date) {
 function groupOf(idString) {
   let secondHyphenIndex = idString.indexOf("-", 6);
   let groupString = idString.slice(0, secondHyphenIndex);
-  cl(groupString);
   return groupString;
 }
 
 function secondsToNextAlarm(date) {
   let nowHour = date.getHours();
-  cl("***");
-  cl(nowHour);
   let nowMinute = date.getMinutes();
   let nowSeconds = date.getSeconds();
   // TODO - resolve line below.
   // let nextAlarm = false;
   let nextAlarm = settings.timeOfNextAlarmToday;
-  cl(nextAlarm);
   if (nextAlarm) {
-    cl(Number(nextAlarm.slice(0, 2)));
     // compare
     // hours
     let deltaHours = Number(nextAlarm.slice(0, 2)) - nowHour;
-    cl(deltaHours);
     // minutes
+    // TODO ERROR IN THIS CALCULATION
     let deltaMinutes =
       Number(nextAlarm.slice(-2)) - nowMinute - (nowSeconds ? 1 : 0);
     // seconds
@@ -216,24 +211,16 @@ function timeToNextAlarm() {
   // let nowMinute = dN.getMinutes();
   // let nowSeconds = dN.getSeconds();
   let nowTimeFourChar = convertDateToFourCharTime(dN);
-  cl(nowTimeFourChar);
   let nowDay = dN.getDay();
   nowDay = dayStringAssign[nowDay];
-  cl(nowDay);
   let alarmToTest = "";
 
   for (group in settings.groups) {
-    cl(group);
     if (settings.groups[group].groupActive) {
-      cl("group is active");
       if (settings.groups[group].activeDays[nowDay]) {
-        cl("day is active");
-
         for (let i = 0; i < settings.groups[group].alarms.length; i++) {
           alarmToTest = settings.groups[group].alarms[i];
           if (alarmToTest > nowTimeFourChar) {
-            cl(alarmToTest);
-            cl("in future");
             cl(
               settings.timeOfNextAlarmToday
                 ? settings.timeOfNextAlarmToday
@@ -246,15 +233,10 @@ function timeToNextAlarm() {
                 : "2401") // if timeOfNextAlarmToday is false, compare to "2401", which will always be true
             )
               settings.timeOfNextAlarmToday = alarmToTest;
-            cl(settings.timeOfNextAlarmToday);
             // TODO deal with new day and with restart on same day
           } else {
             if (alarmToTest == nowTimeFourChar) {
-              cl(alarmToTest);
-              cl("alarm is this minute");
-              cl(nowTimeFourChar);
               let dateNowSixChar = convertToSixCharDate(dN);
-              cl(dateNowSixChar);
               if (
                 settings.lastAlarm.date != dateNowSixChar ||
                 settings.lastAlarm.time != alarmToTest
@@ -264,18 +246,13 @@ function timeToNextAlarm() {
                 makeAlarm();
               }
             } else {
-              cl(alarmToTest);
-              cl("already happened");
             }
           }
         }
       }
     }
   }
-  cl("next alarm is: ");
-  cl(settings.timeOfNextAlarmToday);
   settings.timeToNextAlarm = secondsToNextAlarm(dN);
-  cl(settings.timeToNextAlarm);
   countdownEl.innerText = "Time until next alarm: " + settings.timeToNextAlarm;
 }
 
@@ -305,10 +282,18 @@ const proceedWith = {
       settings.groups[group].alarms.push(newAlarmTimeFourChar);
       // Update DOM to display new time
       const newAlarmTimeEl = document.createElement("p");
+      const newAlarmDeleteButton = document.createElement("button");
       let newAlarmText = "Alarm time: " + convertToAMPM(newAlarmTimeFourChar);
       // TODO: AM times show up with 0, but pm times don't
       newAlarmTimeEl.innerText = newAlarmText;
+      newAlarmDeleteButton.innerText = "x delete this alarm";
+      newAlarmTimeEl.style.display = "inline-block";
+      newAlarmDeleteButton.setAttribute("id", "group-1-delete-alarm-btn");
+      newAlarmDeleteButton.setAttribute("data-do", "delete-alarm");
       document.getElementById(`${group}-alarm-times`).append(newAlarmTimeEl);
+      document
+        .getElementById(`${group}-alarm-times`)
+        .append(newAlarmDeleteButton);
       document.getElementById(`${group}-new-alarm-form`).reset();
     }
   },
@@ -352,6 +337,7 @@ const proceedWith = {
   },
 
   "add-group": function (evt) {
+    evt.preventDefault();
     cl("add group");
   },
 };
@@ -364,11 +350,25 @@ function handleClick(evt) {
   proceedWith[functionToDo](evt);
 }
 
+// function pulse() {
+//   pulseInterval = setInterval(cl("hello"), settings.pulsePeriod * 1000);
+//   // clearInterval(pulseInterval);
+// }
+
 documentBody.addEventListener("click", function (evt) {
   cl("body clicked");
   handleClick(evt);
 });
 
+function pulse() {
+  cl("hello *************************");
+  timeToNextAlarm();
+}
+
+setInterval(pulse, settings.pulsePeriod * 1000);
+// setInterval(cl("hello"), settings.pulsePeriod * 1000);
+
+// pulse();
 // TODO store setting
 // TODO sort alarm times
 // TODO multiple groups

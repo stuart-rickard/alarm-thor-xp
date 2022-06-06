@@ -8,8 +8,11 @@
   </head>
 
   <body>
+    <div>
+      <p>Page has changed -- be sure to save!</p>
+    </div>
+    <!-- below should be a checkbox? or it disappears once set? -->
     <button data-do="make-alert-sound">activate alarms</button>
-    <button data-do="next-alarm">next alarm</button>
     <div class="clock-adjust">
       <p>adjust for clock time</p>
       <div>computer time is</div>
@@ -18,6 +21,7 @@
       <p>difference is:</p>
     </div>
     <h2 id="countdown">Time until next alarm:</h2>
+
     <div class="groups" id="groups">
       <div class="group" id="group-1">
         <p>Group 1</p>
@@ -28,41 +32,25 @@
             id="group-1-radio-on"
             name="active-1"
             data-do="turn-group-on"
-            data-radio="on"
             checked=""
           />
-          <label id="group-1-radio-on-label" for="group-1-radio-on">On</label>
+          <label for="group-1-radio-on">On</label>
           <input
             type="radio"
             id="group-1-radio-off"
             data-do="turn-group-off"
-            data-radio="off"
             name="active-1"
           />
-          <label id="group-1-radio-off-label" for="group-1-radio-off"
-            >Off</label
-          >
+          <label for="group-1-radio-off">Off</label>
         </div>
         <p>Select active days</p>
         <div class="weekDays-selector">
-          <input
-            type="checkbox"
-            id="group-1-day-sun"
-            class="weekday"
-            data-do="toggle-day"
-            data-day="Sunday"
-            data-group="1"
-            data-checked="no"
-          />
+          <input type="checkbox" id="group-1-day-sun" class="weekday" />
           <label for="group-1-day-sun">S</label>
           <input
             type="checkbox"
             id="group-1-day-mon"
             class="weekday"
-            data-do="toggle-day"
-            data-day="Monday"
-            data-group="1"
-            data-checked="no"
             checked=""
           />
           <label for="group-1-day-mon">M</label>
@@ -70,10 +58,6 @@
             type="checkbox"
             id="group-1-day-tue"
             class="weekday"
-            data-do="toggle-day"
-            data-day="Tuesday"
-            data-group="1"
-            data-checked="no"
             checked=""
           />
           <label for="group-1-day-tue">T</label>
@@ -81,10 +65,6 @@
             type="checkbox"
             id="group-1-day-wed"
             class="weekday"
-            data-do="toggle-day"
-            data-day="Wednesday"
-            data-group="1"
-            data-checked="no"
             checked=""
           />
           <label for="group-1-day-wed">W</label>
@@ -92,10 +72,6 @@
             type="checkbox"
             id="group-1-day-thu"
             class="weekday"
-            data-do="toggle-day"
-            data-day="Thursday"
-            data-group="1"
-            data-checked="no"
             checked=""
           />
           <label for="group-1-day-thu">T</label>
@@ -103,51 +79,39 @@
             type="checkbox"
             id="group-1-day-fri"
             class="weekday"
-            data-do="toggle-day"
-            data-day="Friday"
-            data-group="1"
-            data-checked="no"
             checked=""
           />
           <label for="group-1-day-fri">F</label>
-          <input
-            type="checkbox"
-            id="group-1-day-sat"
-            class="weekday"
-            data-do="toggle-day"
-            data-day="Saturday"
-            data-group="1"
-            data-checked="no"
-          />
+          <input type="checkbox" id="group-1-day-sat" class="weekday" />
           <label for="group-1-day-sat">S</label>
         </div>
         <div class="alarm-times" id="group-1-alarm-times">
-          <div data-group="1" data-time="14:30">
-            <p data-group="1" data-time="14:30">2:30 PM alarm EXAMPLE</p>
-            <button data-do="delete-alarm" data-group="1" data-time="14:30">
-              x delete alarm
+          <h3>Alarm Times:</h3>
+          <form id="group-1-new-alarm-form">
+            <label for="alarm">Choose a time for your alarm:</label>
+            <input
+              type="time"
+              id="group-1-new-alarm-input"
+              name="alarm"
+              data-do="add-alarm"
+              required
+            />
+            <button id="group-1-add-alarm-btn" data-do="add-alarm">
+              + add alarm
+            </button>
+          </form>
+          <h2>No alarms have been set in this group.</h2>
+          <div id="group-1-alarm-1430">
+            <p style="display: inline-block">2:30 PM alarm EXAMPLE</p>
+            <button id="group-1-delete-alarm-btn-1430" data-do="delete-alarm">
+              x delete this alarm
             </button>
           </div>
         </div>
-        <form id="group-1-new-alarm-form">
-          <label for="alarm">Choose a time for your alarm:</label>
-          <input
-            type="time"
-            id="group-1-new-alarm-input"
-            name="alarm"
-            data-do="add-alarm"
-            required
-          />
-          <button id="group-1-add-alarm-btn" data-do="add-alarm">
-            + add alarm
-          </button>
-        </form>
       </div>
     </div>
+
     <button data-do="add-group">+ add group</button>
-    <div>
-      <p>Page has changed -- be sure to save!</p>
-    </div>
     <script src="js/script.js"></script>
   </body>
 </html>
