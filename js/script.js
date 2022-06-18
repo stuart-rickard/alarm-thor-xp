@@ -256,6 +256,41 @@ function timeToNextAlarm() {
   countdownEl.innerText = "Time until next alarm: " + settings.timeToNextAlarm;
 }
 
+const createElement = function ({
+  type,
+  styles,
+  attributes,
+  props,
+  eventHandlers,
+  appendTo,
+}) {
+  let elementType = type || "div";
+  let elementStyles = styles || {};
+  let elementAttributes = attributes || {};
+  let elementProps = props || {};
+  let elementEventHandlers = eventHandlers || {};
+  let elementAppendTo = appendTo || "body";
+
+  let element = document.createElement(elementType);
+  for (let key in elementStyles) {
+    element.style[key] = elementStyles[key];
+  }
+  for (let key in elementAttributes) {
+    element.setAttribute(key, elementAttributes[key]);
+  }
+  for (let key in elementProps) {
+    element[key] = elementProps[key];
+  }
+  for (let key in elementEventHandlers) {
+    element.addEventListener(key, elementEventHandlers[key]);
+  }
+  elementAppendTo.append(element);
+
+  cl(element);
+  // not sure we need the return statement
+  // return element;
+};
+
 const proceedWith = {
   "next-alarm": function () {
     timeToNextAlarm();
@@ -339,6 +374,19 @@ const proceedWith = {
   "add-group": function (evt) {
     evt.preventDefault();
     cl("add group");
+    let argElDetails = {
+      type: "div",
+      styles: {
+        color: "#fff",
+        "background-color": "#3da6ed",
+        "border-radius": "2px",
+      },
+      props: {
+        innerText: "text",
+      },
+      appendTo: documentBody,
+    };
+    createElement(argElDetails);
   },
 };
 

@@ -1,3 +1,26 @@
+createElement({
+  type: 'button',
+  styles: {
+    "color": "#fff",
+    "background-color": "#3da6ed",
+    "border-radius": "2px",
+    "border": "none",
+    "outline": "none",
+    "cursor": "pointer"
+  },
+  attributes: {
+    "class": "p-3"
+  },
+  props: {
+    "innerText": "Click Me!"
+  },
+  eventHandlers: {
+    "click": handleButtonClick
+  },
+  appendTo: "#element-creator"
+})
+
+
 add alarm with time to DOM
   trigger webpage has changed
   get alarm time
