@@ -1,40 +1,43 @@
-createElement({
-  type: 'button',
-  styles: {
-    "color": "#fff",
-    "background-color": "#3da6ed",
-    "border-radius": "2px",
-    "border": "none",
-    "outline": "none",
-    "cursor": "pointer"
-  },
-  attributes: {
-    "class": "p-3"
-  },
-  props: {
-    "innerText": "Click Me!"
-  },
-  eventHandlers: {
-    "click": handleButtonClick
-  },
-  appendTo: "#element-creator"
-})
+storing settings
+  strategy one:
+    create json from settings and keep dom synced with settings
+      handle opening the webpage
+      create method of saving settings
+      create method of retrieving settings
+  strategy two:
+    save everything within live html that gets saved
+      why do checkboxes and buttons reset?
+      make it easier to save the webpage (naming of file?)
+      update code to reference the dom instead of settings
+      
+
+add group
+  determine group number
+  add elements larger to smaller
+  controlling the order of elements
+
+  group
+  - id = group number
+  - class = group
+    p with group #
+    - innerText = "Group " + number
+    delete group button
+    - id = group-x-delete-btn
+    - data-do = "delete-group"
+    - innerText = "x delete group"
+    p turn group on/off
+    radios to turn group on/off
+    p select active days
+    day check boxes
+    alarm times div
+      p alarm times
+      p choose an alarm time
+      input time
+      add alarm button
+      p no alarm set
 
 
-add alarm with time to DOM
-  trigger webpage has changed
-  get alarm time
-  create new alarm element
-    set data attributes for group and time
-    append to DOM
-  determine next alarm
-
-coding of id's - so that we can easily access the element
-  make independent of purpose...
-  location-type-specific e.g.: grp1-div-1430
-
-update data fields to control style?
-  // can css look at data attribute?
+update data fields to control style
 
 create new group
   trigger webpage has changed
@@ -42,28 +45,6 @@ create new group
     needs to be next number
   create each element within group
     with appropriate data attributes
-  update status object
-  determine next alarm
-
-determine next alarm
-    if there's no next alarm, set noNextAlarm flag
-
-pulse
-  if time < nextAlarm || no next alarm, wait for next pulse
-    else
-      sound alarm
-      determine next alarm
-  display time until next alarm
-    subtract adjusted clock time from next alarm time
-    display the difference  
-
-turn group on or off
-  check data fields
-  update status object
-  determine next alarm
-
-change active days
-  check data fields
   update status object
   determine next alarm
 
@@ -98,11 +79,9 @@ instructions to save webpage
 cleanup
   variable names
   not needed attributes
-    // is is better to use id rather than multiple data attributes?
   move code around
 
-
-
+debug
 
 adjust for clock time
   take entry of current clock time
@@ -111,4 +90,26 @@ adjust for clock time
   trigger webpage has changed
   determine next alarm
 
+
+createElement({
+  type: 'button',
+  styles: {
+    "color": "#fff",
+    "background-color": "#3da6ed",
+    "border-radius": "2px",
+    "border": "none",
+    "outline": "none",
+    "cursor": "pointer"
+  },
+  attributes: {
+    "class": "p-3"
+  },
+  props: {
+    "innerText": "Click Me!"
+  },
+  eventHandlers: {
+    "click": handleButtonClick
+  },
+  appendTo: "#element-creator"
+})
 

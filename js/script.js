@@ -367,8 +367,8 @@ const proceedWith = {
     cl("save page");
   },
 
-  "save-as-new-page": function (evt) {
-    cl("save as new page");
+  "delete-group": function (evt) {
+    cl("delete group");
   },
 
   "add-group": function (evt) {
@@ -409,7 +409,7 @@ documentBody.addEventListener("click", function (evt) {
 });
 
 function pulse() {
-  cl("hello *************************");
+  cl("pulse *************************");
   timeToNextAlarm();
 }
 
