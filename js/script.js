@@ -256,6 +256,87 @@ function timeToNextAlarm() {
   countdownEl.innerText = "Time until next alarm: " + settings.timeToNextAlarm;
 }
 
+const groupCreateArgs = {
+  1: {
+    type: "div",
+    // styles,
+    attributes: {
+      class: "group",
+      // "id": XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    },
+    // props,
+    // eventHandlers,
+
+    // appendTo: "parent", THIS SHOULD GO AWAY
+
+    childElements: {
+      1: {
+        type: "p",
+        // styles,
+        // attributes,
+        props: "Group #",
+        // eventHandlers,
+        appendTo: "parent",
+      },
+      2: {
+        type: "button",
+        // styles,
+        attributes: {
+          "data-do": "delete group",
+          // "id": XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        },
+        props: { innerText: "x delete group" },
+        // eventHandlers,
+        appendTo: "parent",
+      },
+    },
+  },
+};
+
+// createElementsFromRecipeObject function
+const createElementsFromRecipeObject = function (
+  recipeObject,
+  groupNumber,
+  parentElement
+) {
+  for (let key in recipeObject) {
+    cl("recipeObject[key] is: ");
+    cl(recipeObject[key]);
+
+    // send appropriate arguments to createElement
+    let elementType = recipeObject[key].type || "div";
+    cl("elementType is: " + elementType);
+    let elementStyles = recipeObject[key].styles || {};
+    let elementAttributes = recipeObject[key].attributes || {};
+    let elementProps = recipeObject[key].props || {};
+    let elementEventHandlers = recipeObject[key].eventHandlers || {};
+    let elementAppendTo =
+      // recipeObject[key].appendTo ||
+      parentElement;
+
+    let createdElement = createElement({
+      type: elementType,
+      styles: elementStyles,
+      attributes: elementAttributes,
+      props: elementProps,
+      eventHandlers: elementEventHandlers,
+      appendTo: elementAppendTo,
+    });
+    cl("createdElement is: " + createdElement);
+    // if there's a childElements property,
+    if (recipeObject[key].childElements) {
+      // send them to createElementsFromRecipeObject
+      cl(recipeObject[key].childElements);
+      createElementsFromRecipeObject(
+        recipeObject[key].childElements,
+        groupNumber,
+        createdElement
+      );
+      // }
+    }
+  }
+};
+
 const createElement = function ({
   type,
   styles,
@@ -264,13 +345,13 @@ const createElement = function ({
   eventHandlers,
   appendTo,
 }) {
+  cl("type is: " + type);
   let elementType = type || "div";
   let elementStyles = styles || {};
   let elementAttributes = attributes || {};
   let elementProps = props || {};
   let elementEventHandlers = eventHandlers || {};
   let elementAppendTo = appendTo || "body";
-
   let element = document.createElement(elementType);
   for (let key in elementStyles) {
     element.style[key] = elementStyles[key];
@@ -287,8 +368,8 @@ const createElement = function ({
   elementAppendTo.append(element);
 
   cl(element);
-  // not sure we need the return statement
-  // return element;
+
+  return element;
 };
 
 const proceedWith = {
@@ -374,19 +455,20 @@ const proceedWith = {
   "add-group": function (evt) {
     evt.preventDefault();
     cl("add group");
-    let argElDetails = {
-      type: "div",
-      styles: {
-        color: "#fff",
-        "background-color": "#3da6ed",
-        "border-radius": "2px",
-      },
-      props: {
-        innerText: "text",
-      },
-      appendTo: documentBody,
-    };
-    createElement(argElDetails);
+    createElementsFromRecipeObject(groupCreateArgs, 5, documentBody);
+    // let argElDetails = {
+    //   type: "div",
+    //   styles: {
+    //     color: "#fff",
+    //     "background-color": "#3da6ed",
+    //     "border-radius": "2px",
+    //   },
+    //   props: {
+    //     innerText: "text",
+    //   },
+    //   appendTo: documentBody,
+    // };
+    // createElement(argElDetails);
   },
 };
 
