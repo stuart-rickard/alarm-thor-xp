@@ -35,6 +35,7 @@ let settings = {
       alarms: [],
     },
   },
+  nextGroup: 2,
 };
 
 let audioContextActivated = false;
@@ -325,14 +326,13 @@ const createElementsFromRecipeObject = function (
     cl("createdElement is: " + createdElement);
     // if there's a childElements property,
     if (recipeObject[key].childElements) {
-      // send them to createElementsFromRecipeObject
+      // send it to createElementsFromRecipeObject
       cl(recipeObject[key].childElements);
       createElementsFromRecipeObject(
         recipeObject[key].childElements,
         groupNumber,
         createdElement
       );
-      // }
     }
   }
 };
@@ -346,6 +346,7 @@ const createElement = function ({
   appendTo,
 }) {
   cl("type is: " + type);
+  // TODO resolve whether it's OK to duplicate this code at the createElementsFromRecipeObject level
   let elementType = type || "div";
   let elementStyles = styles || {};
   let elementAttributes = attributes || {};
@@ -455,20 +456,28 @@ const proceedWith = {
   "add-group": function (evt) {
     evt.preventDefault();
     cl("add group");
-    createElementsFromRecipeObject(groupCreateArgs, 5, documentBody);
-    // let argElDetails = {
-    //   type: "div",
-    //   styles: {
-    //     color: "#fff",
-    //     "background-color": "#3da6ed",
-    //     "border-radius": "2px",
-    //   },
-    //   props: {
-    //     innerText: "text",
-    //   },
-    //   appendTo: documentBody,
-    // };
-    // createElement(argElDetails);
+    let group = `group-${settings.nextGroup}`;
+    cl("group is: " + group);
+    settings.nextGroup++;
+    settings.groups = {
+      ...settings.groups,
+      [group]: {
+        groupActive: true,
+        activeDays: {
+          sun: false,
+          mon: true,
+          tue: true,
+          wed: true,
+          thu: true,
+          fri: true,
+          sat: false,
+        },
+        alarms: [],
+      },
+    };
+    cl(settings);
+    // customize groupCreateArgs
+    createElementsFromRecipeObject(groupCreateArgs, group, documentBody);
   },
 };
 
