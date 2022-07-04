@@ -257,13 +257,13 @@ function timeToNextAlarm() {
   countdownEl.innerText = "Time until next alarm: " + settings.timeToNextAlarm;
 }
 
-const groupCreateArgs = {
-  1: {
-    type: "div",
+class GroupCreateArgs {
+  1 = {
+    // type: "div",
     // styles,
     attributes: {
       class: "group",
-      // "id": XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      id: `group-${settings.nextGroup}`,
     },
     // props,
     // eventHandlers,
@@ -275,29 +275,113 @@ const groupCreateArgs = {
         type: "p",
         // styles,
         // attributes,
-        props: "Group #",
+        props: { innerText: `Group ${settings.nextGroup}` },
         // eventHandlers,
-        appendTo: "parent",
+        // appendTo:
       },
       2: {
         type: "button",
         // styles,
         attributes: {
           "data-do": "delete group",
-          // "id": XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          id: `group-${settings.nextGroup}-delete-btn`,
         },
         props: { innerText: "x delete group" },
         // eventHandlers,
-        appendTo: "parent",
+        // appendTo:
+      },
+      3: {
+        type: "p",
+        props: { innerText: "Turn group on or off" },
+      },
+      4: {
+        attributes: {
+          class: "radio-buttons",
+        },
+        childElements: {
+          1: {
+            type: "input",
+            attributes: {
+              type: "radio",
+              id: `group-${settings.nextGroup}-radio-on`,
+              name: `active-${settings.nextGroup}`,
+              "data-do": "turn-group-on",
+              checked: "",
+            },
+          },
+          2: {
+            type: "label",
+            attributes: {
+              for: `group-${settings.nextGroup}-radio-on`,
+            },
+            props: { innerText: "On" },
+          },
+          3: {
+            type: "input",
+            attributes: {
+              type: "radio",
+              id: `group-${settings.nextGroup}-radio-off`,
+              name: `active-${settings.nextGroup}`,
+              "data-do": "turn-group-off",
+            },
+          },
+          4: {
+            type: "label",
+            attributes: {
+              for: `group-${settings.nextGroup}-radio-off`,
+            },
+            props: { innerText: "Off" },
+          },
+        },
+      },
+      5: {
+        type: "p",
+        props: { innerText: "Select active days" },
+      },
+      6: {
+        attributes: { class: "weekDays-selector" },
+        childElements: {
+          1: {
+            type: "input",
+            attributes: {
+              type: "checkbox",
+              id: `group-${settings.nextGroup}-day-sun`,
+              class: "weekday",
+            },
+          },
+          2: {
+            type: "label",
+            attributes: {
+              for: `group-${settings.nextGroup}-day-sun`,
+            },
+            props: { innerText: "S" },
+          },
+          3: {
+            type: "input",
+            attributes: {
+              type: "checkbox",
+              id: `group-${settings.nextGroup}-day-mon`,
+              class: "weekday",
+              checked: "",
+            },
+          },
+          4: {
+            type: "label",
+            attributes: {
+              for: `group-${settings.nextGroup}-day-mon`,
+            },
+            props: { innerText: "M" },
+          },
+        },
       },
     },
-  },
-};
+  };
+}
 
 // createElementsFromRecipeObject function
 const createElementsFromRecipeObject = function (
   recipeObject,
-  groupNumber,
+  // groupNumber,
   parentElement
 ) {
   for (let key in recipeObject) {
@@ -330,7 +414,7 @@ const createElementsFromRecipeObject = function (
       cl(recipeObject[key].childElements);
       createElementsFromRecipeObject(
         recipeObject[key].childElements,
-        groupNumber,
+        // groupNumber,
         createdElement
       );
     }
@@ -458,7 +542,6 @@ const proceedWith = {
     cl("add group");
     let group = `group-${settings.nextGroup}`;
     cl("group is: " + group);
-    settings.nextGroup++;
     settings.groups = {
       ...settings.groups,
       [group]: {
@@ -476,8 +559,13 @@ const proceedWith = {
       },
     };
     cl(settings);
-    // customize groupCreateArgs
-    createElementsFromRecipeObject(groupCreateArgs, group, documentBody);
+    let newArgs = new GroupCreateArgs(); // update groupCreateArgs
+    createElementsFromRecipeObject(
+      newArgs,
+      // group,
+      documentBody
+    );
+    settings.nextGroup++;
   },
 };
 
