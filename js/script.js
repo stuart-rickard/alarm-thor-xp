@@ -347,6 +347,7 @@ class GroupCreateArgs {
               type: "checkbox",
               id: `group-${settings.nextGroup}-day-sun`,
               class: "weekday",
+              "data-do": "toggle-day",
             },
           },
           2: {
@@ -362,6 +363,7 @@ class GroupCreateArgs {
               type: "checkbox",
               id: `group-${settings.nextGroup}-day-mon`,
               class: "weekday",
+              "data-do": "toggle-day",
               checked: "",
             },
           },
@@ -372,6 +374,139 @@ class GroupCreateArgs {
             },
             props: { innerText: "M" },
           },
+          5: {
+            type: "input",
+            attributes: {
+              type: "checkbox",
+              id: `group-${settings.nextGroup}-day-tue`,
+              class: "weekday",
+              "data-do": "toggle-day",
+              checked: "",
+            },
+          },
+          6: {
+            type: "label",
+            attributes: {
+              for: `group-${settings.nextGroup}-day-tue`,
+            },
+            props: { innerText: "T" },
+          },
+          7: {
+            type: "input",
+            attributes: {
+              type: "checkbox",
+              id: `group-${settings.nextGroup}-day-wed`,
+              class: "weekday",
+              "data-do": "toggle-day",
+              checked: "",
+            },
+          },
+          8: {
+            type: "label",
+            attributes: {
+              for: `group-${settings.nextGroup}-day-wed`,
+            },
+            props: { innerText: "W" },
+          },
+          9: {
+            type: "input",
+            attributes: {
+              type: "checkbox",
+              id: `group-${settings.nextGroup}-day-thu`,
+              class: "weekday",
+              "data-do": "toggle-day",
+              checked: "",
+            },
+          },
+          10: {
+            type: "label",
+            attributes: {
+              for: `group-${settings.nextGroup}-day-thu`,
+            },
+            props: { innerText: "T" },
+          },
+          11: {
+            type: "input",
+            attributes: {
+              type: "checkbox",
+              id: `group-${settings.nextGroup}-day-fri`,
+              class: "weekday",
+              "data-do": "toggle-day",
+              checked: "",
+            },
+          },
+          12: {
+            type: "label",
+            attributes: {
+              for: `group-${settings.nextGroup}-day-fri`,
+            },
+            props: { innerText: "F" },
+          },
+          13: {
+            type: "input",
+            attributes: {
+              type: "checkbox",
+              id: `group-${settings.nextGroup}-day-sat`,
+              class: "weekday",
+              "data-do": "toggle-day",
+            },
+          },
+          14: {
+            type: "label",
+            attributes: {
+              for: `group-${settings.nextGroup}-day-sat`,
+            },
+            props: { innerText: "S" },
+          },
+        },
+      },
+      7: {
+        attributes: {
+          class: "alarm-times",
+          id: `group-${settings.nextGroup}-alarm-times`,
+        },
+        childElements: {
+          1: {
+            type: "h3",
+            props: { innerText: "Alarm Times:" },
+          },
+          2: {
+            type: "form",
+            attributes: {
+              id: `group-${settings.nextGroup}-new-alarm-form`,
+            },
+            childElements: {
+              1: {
+                type: "label",
+                attributes: {
+                  for: `group-${settings.nextGroup}-new-alarm-input`,
+                },
+                props: { innerText: "Choose a time for your alarm:" },
+              },
+              2: {
+                type: "input",
+                attributes: {
+                  type: "time",
+                  id: `group-${settings.nextGroup}-new-alarm-input`,
+                  name: `group-${settings.nextGroup}-new-alarm-input`,
+                  "data-do": "add-alarm",
+                  required: "",
+                },
+              },
+              3: {
+                type: "button",
+                attributes: {
+                  id: `group-${settings.nextGroup}-add-alarm-btn`,
+                  "data-do": "add-alarm",
+                },
+                props: { innerText: "+ add alarm" },
+              },
+            },
+          },
+          3: {
+            type: "h2",
+            props: { innerText: "No alarms have been set in this group" },
+          },
         },
       },
     },
@@ -379,39 +514,16 @@ class GroupCreateArgs {
 }
 
 // createElementsFromRecipeObject function
-const createElementsFromRecipeObject = function (
-  recipeObject,
-  // groupNumber,
-  parentElement
-) {
+const createElementsFromRecipeObject = function (recipeObject, parentElement) {
   for (let key in recipeObject) {
-    cl("recipeObject[key] is: ");
-    cl(recipeObject[key]);
-
-    // send appropriate arguments to createElement
-    let elementType = recipeObject[key].type || "div";
-    cl("elementType is: " + elementType);
-    let elementStyles = recipeObject[key].styles || {};
-    let elementAttributes = recipeObject[key].attributes || {};
-    let elementProps = recipeObject[key].props || {};
-    let elementEventHandlers = recipeObject[key].eventHandlers || {};
-    let elementAppendTo =
-      // recipeObject[key].appendTo ||
-      parentElement;
-
     let createdElement = createElement({
-      type: elementType,
-      styles: elementStyles,
-      attributes: elementAttributes,
-      props: elementProps,
-      eventHandlers: elementEventHandlers,
-      appendTo: elementAppendTo,
+      ...recipeObject[key],
+      appendTo: parentElement,
     });
     cl("createdElement is: " + createdElement);
     // if there's a childElements property,
     if (recipeObject[key].childElements) {
       // send it to createElementsFromRecipeObject
-      cl(recipeObject[key].childElements);
       createElementsFromRecipeObject(
         recipeObject[key].childElements,
         // groupNumber,

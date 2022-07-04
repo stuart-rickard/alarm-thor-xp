@@ -49,12 +49,18 @@
         </div>
         <p>Select active days</p>
         <div class="weekDays-selector">
-          <input type="checkbox" id="group-1-day-sun" class="weekday" />
+          <input
+            type="checkbox"
+            id="group-1-day-sun"
+            class="weekday"
+            data-do="toggle-day"
+          />
           <label for="group-1-day-sun">S</label>
           <input
             type="checkbox"
             id="group-1-day-mon"
             class="weekday"
+            data-do="toggle-day"
             checked=""
           />
           <label for="group-1-day-mon">M</label>
@@ -62,6 +68,7 @@
             type="checkbox"
             id="group-1-day-tue"
             class="weekday"
+            data-do="toggle-day"
             checked=""
           />
           <label for="group-1-day-tue">T</label>
@@ -69,6 +76,7 @@
             type="checkbox"
             id="group-1-day-wed"
             class="weekday"
+            data-do="toggle-day"
             checked=""
           />
           <label for="group-1-day-wed">W</label>
@@ -76,6 +84,7 @@
             type="checkbox"
             id="group-1-day-thu"
             class="weekday"
+            data-do="toggle-day"
             checked=""
           />
           <label for="group-1-day-thu">T</label>
@@ -83,20 +92,28 @@
             type="checkbox"
             id="group-1-day-fri"
             class="weekday"
+            data-do="toggle-day"
             checked=""
           />
           <label for="group-1-day-fri">F</label>
-          <input type="checkbox" id="group-1-day-sat" class="weekday" />
+          <input
+            type="checkbox"
+            id="group-1-day-sat"
+            class="weekday"
+            data-do="toggle-day"
+          />
           <label for="group-1-day-sat">S</label>
         </div>
         <div class="alarm-times" id="group-1-alarm-times">
           <h3>Alarm Times:</h3>
           <form id="group-1-new-alarm-form">
-            <label for="alarm">Choose a time for your alarm:</label>
+            <label for="group-1-new-alarm-input"
+              >Choose a time for your alarm:</label
+            >
             <input
               type="time"
               id="group-1-new-alarm-input"
-              name="alarm"
+              name="group-1-new-alarm-input"
               data-do="add-alarm"
               required
             />
