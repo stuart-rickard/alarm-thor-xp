@@ -169,16 +169,15 @@ function secondsToNextAlarm(date) {
   // let nextAlarm = false;
   let nextAlarm = settings.timeOfNextAlarmToday;
   if (nextAlarm) {
-    // compare
-    // hours
-    let deltaHours = Number(nextAlarm.slice(0, 2)) - nowHour;
-    // minutes
-    // TODO ERROR IN THIS CALCULATION
-    let deltaMinutes =
-      Number(nextAlarm.slice(-2)) - nowMinute - (nowSeconds ? 1 : 0);
-    // seconds
-    let deltaSeconds = 60 - nowSeconds;
-    // convert
+    let nowTotalSeconds = nowHour * 3600 + nowMinute * 60 + nowSeconds;
+    let nextAlarmTotalSeconds =
+      nextAlarm.slice(0, 2) * 3600 + nextAlarm.slice(-2) * 60;
+    let deltaValue = nextAlarmTotalSeconds - nowTotalSeconds;
+    let deltaSeconds = deltaValue % 60;
+    deltaValue = deltaValue - deltaSeconds;
+    let deltaMinutes = (deltaValue % 3600) / 60;
+    deltaValue = deltaValue - deltaMinutes * 60;
+    let deltaHours = deltaValue / 3600;
     let deltaHoursString =
       deltaHours < 10
         ? deltaHours == 0
@@ -208,9 +207,6 @@ function secondsToNextAlarm(date) {
 function timeToNextAlarm() {
   settings.timeOfNextAlarmToday = false; // reset next alarm time
   let dN = new Date();
-  // let nowHour = dN.getHours();
-  // let nowMinute = dN.getMinutes();
-  // let nowSeconds = dN.getSeconds();
   let nowTimeFourChar = convertDateToFourCharTime(dN);
   let nowDay = dN.getDay();
   nowDay = dayStringAssign[nowDay];

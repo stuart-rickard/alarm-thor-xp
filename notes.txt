@@ -11,42 +11,10 @@ storing settings
       update code to reference the dom instead of settings
       
 
-add group
-  determine group number
-  add elements larger to smaller
-  controlling the order of elements
-
-  group
-  - id = group number
-  - class = group
-    p with group #
-    - innerText = "Group " + number
-    delete group button
-    - id = group-x-delete-btn
-    - data-do = "delete-group"
-    - innerText = "x delete group"
-    p turn group on/off
-    radios to turn group on/off
-    p select active days
-    day check boxes
-    alarm times div
-      p alarm times
-      p choose an alarm time
-      input time
-      add alarm button
-      p no alarm set
-
+controlling the order of elements
+  fix location of add group button
 
 update data fields to control style
-
-create new group
-  trigger webpage has changed
-  create group element
-    needs to be next number
-  create each element within group
-    with appropriate data attributes
-  update status object
-  determine next alarm
 
 delete alarm
   check data fields
@@ -89,27 +57,4 @@ adjust for clock time
   update adjust alarm time in status object
   trigger webpage has changed
   determine next alarm
-
-
-createElement({
-  type: 'button',
-  styles: {
-    "color": "#fff",
-    "background-color": "#3da6ed",
-    "border-radius": "2px",
-    "border": "none",
-    "outline": "none",
-    "cursor": "pointer"
-  },
-  attributes: {
-    "class": "p-3"
-  },
-  props: {
-    "innerText": "Click Me!"
-  },
-  eventHandlers: {
-    "click": handleButtonClick
-  },
-  appendTo: "#element-creator"
-})
 
