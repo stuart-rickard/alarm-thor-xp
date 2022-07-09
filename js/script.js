@@ -17,7 +17,7 @@ let settings = {
     date: "200000",
     time: "0000",
   },
-  pulsePeriod: 5, // seconds; must be less than 60
+  pulsePeriod: 1, // seconds; must be less than 60
   groups: {
     "group-1": {
       groupActive: true,
@@ -168,6 +168,8 @@ function secondsToNextAlarm(date) {
   let nextAlarm = settings.timeOfNextAlarmToday;
   if (nextAlarm) {
     let nowTotalSeconds = nowHour * 3600 + nowMinute * 60 + nowSeconds;
+    // Adjust for clock adjustment
+    nowTotalSeconds = nowTotalSeconds - settings.clockDelta * 60;
     let nextAlarmTotalSeconds =
       nextAlarm.slice(0, 2) * 3600 + nextAlarm.slice(-2) * 60;
     let deltaValue = nextAlarmTotalSeconds - nowTotalSeconds;
@@ -203,6 +205,7 @@ function secondsToNextAlarm(date) {
 }
 
 // rename this function
+// TODO test edge cases of adjusted clock
 function timeToNextAlarm() {
   settings.timeOfNextAlarmToday = false; // reset next alarm time
   let dN = new Date();
@@ -217,11 +220,11 @@ function timeToNextAlarm() {
         for (let i = 0; i < settings.groups[group].alarms.length; i++) {
           alarmToTest = settings.groups[group].alarms[i];
           if (alarmToTest > nowTimeFourChar) {
-            cl(
-              settings.timeOfNextAlarmToday
-                ? settings.timeOfNextAlarmToday
-                : "2401"
-            );
+            // cl(
+            //   settings.timeOfNextAlarmToday
+            //     ? settings.timeOfNextAlarmToday
+            //     : "2401"
+            // );
             if (
               alarmToTest <
               (settings.timeOfNextAlarmToday
@@ -594,9 +597,9 @@ const createElement = function ({
 };
 
 const proceedWith = {
-  "next-alarm": function () {
-    timeToNextAlarm();
-  },
+  // "next-alarm": function () {
+  //   timeToNextAlarm();
+  // },
 
   "make-alert-sound": function (evt) {
     cl("hello from make alert sound");
@@ -606,6 +609,7 @@ const proceedWith = {
 
   "data-do-is-null": function (evt) {
     cl("There is nothing to do for this click location.");
+    timeToNextAlarm();
   },
 
   "add-alarm": function (evt) {
@@ -632,6 +636,36 @@ const proceedWith = {
 
       document.getElementById(`${group}-new-alarm-form`).reset();
     }
+    timeToNextAlarm();
+  },
+
+  "adjust-clock": function (evt) {
+    evt.preventDefault();
+    let timeInput = document.getElementById("clock-adjust-input");
+    let newAlarmTimeFiveChar = timeInput.value;
+    let dN = new Date();
+    let nowTimeFourChar = convertDateToFourCharTime(dN);
+
+    if (newAlarmTimeFiveChar) {
+      // Add time to status object
+      let newAlarmTimeFourChar = convertToFourCharTime(newAlarmTimeFiveChar);
+      let nowTimeTotalMinutes =
+        nowTimeFourChar.slice(0, 2) * 60 + nowTimeFourChar.slice(-2);
+      let clockTimeTotalMinutes =
+        newAlarmTimeFourChar.slice(0, 2) * 60 + newAlarmTimeFourChar.slice(-2);
+      let adjustmentMinutes = nowTimeTotalMinutes - clockTimeTotalMinutes;
+      cl(adjustmentMinutes);
+      settings.clockDelta = adjustmentMinutes;
+      // Update DOM to display new time
+      // TODO: AM times show up with 0, but pm times don't
+
+      document.getElementById("clock-adjust-form").reset();
+      document.getElementById("clock-adjust-status").innerText =
+        adjustmentMinutes == 1 || adjustmentMinutes == -1
+          ? `Clock time adjustment: ${adjustmentMinutes} minute.`
+          : `Clock time adjustment: ${adjustmentMinutes} minutes.`;
+    }
+    timeToNextAlarm();
   },
 
   "turn-group-on": function (evt) {
@@ -641,6 +675,7 @@ const proceedWith = {
     if (evt.target.checked) {
       settings.groups[group].groupActive = true;
     }
+    timeToNextAlarm();
   },
 
   "turn-group-off": function (evt) {
@@ -650,6 +685,7 @@ const proceedWith = {
     if (evt.target.checked) {
       settings.groups[group].groupActive = false;
     }
+    timeToNextAlarm();
   },
 
   "toggle-day": function (evt) {
@@ -658,20 +694,26 @@ const proceedWith = {
     let group = groupOf(evt.target.id);
     let day = evt.target.id.slice(-3);
     settings.groups[group].activeDays[day] = evt.target.checked;
+    timeToNextAlarm();
   },
 
   "delete-alarm": function (evt) {
-    cl("delete alarm");
-    cl(evt);
-    let group = groupOf(evt.target.id);
+    evt.preventDefault();
+    let alarmDivId = evt.target.id.slice(11);
+    // TODO Update settings XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    document.getElementById(alarmDivId).remove();
+    timeToNextAlarm();
   },
 
-  "save-page": function (evt) {
-    cl("save page");
-  },
+  // "save-page": function (evt) {
+  //   cl("save page");
+  // },
 
   "delete-group": function (evt) {
-    cl("delete group");
+    let groupDivId = evt.target.id.slice(0, -11);
+    document.getElementById(groupDivId).remove();
+    // TODO Update settings XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    timeToNextAlarm();
   },
 
   "add-group": function (evt) {
