@@ -1,5 +1,3 @@
-// TODO CHECK FOR SLICE ERRORS
-
 const documentBody = document.body;
 const countdownEl = document.getElementById("countdown");
 
@@ -204,6 +202,7 @@ function secondsToNextAlarm(date) {
   }
 }
 
+// rename this function
 function timeToNextAlarm() {
   settings.timeOfNextAlarmToday = false; // reset next alarm time
   let dN = new Date();
@@ -253,18 +252,47 @@ function timeToNextAlarm() {
   countdownEl.innerText = "Time until next alarm: " + settings.timeToNextAlarm;
 }
 
+class AlarmCreateArgs {
+  constructor(group, alarmTime, newAlarmText) {
+    this.group = group;
+    this.alarmTime = alarmTime;
+    this.newAlarmText = newAlarmText;
+  }
+
+  provideAlarmCreateArgs() {
+    return {
+      1: {
+        attributes: {
+          id: `${this.group}-alarm-${this.alarmTime}`,
+        },
+        childElements: {
+          1: {
+            type: "p",
+            props: {
+              innerText: this.newAlarmText,
+            },
+          },
+          2: {
+            type: "button",
+            attributes: {
+              "data-do": "delete-alarm",
+              id: `delete-btn-${this.group}-alarm-${this.alarmTime}`,
+            },
+            props: { innerText: "x delete this alarm" },
+          },
+        },
+      },
+    };
+  }
+}
+
+// This is not a pure function because it uses a variable that is outside its scope
 class GroupCreateArgs {
   1 = {
-    // type: "div",
-    // styles,
     attributes: {
       class: "group",
       id: `group-${settings.nextGroup}`,
     },
-    // props,
-    // eventHandlers,
-
-    // appendTo: "parent", THIS SHOULD GO AWAY
 
     childElements: {
       1: {
@@ -279,7 +307,7 @@ class GroupCreateArgs {
         type: "button",
         // styles,
         attributes: {
-          "data-do": "delete group",
+          "data-do": "delete-group",
           id: `group-${settings.nextGroup}-delete-btn`,
         },
         props: { innerText: "x delete group" },
@@ -590,19 +618,18 @@ const proceedWith = {
       let newAlarmTimeFourChar = convertToFourCharTime(newAlarmTimeFiveChar);
       settings.groups[group].alarms.push(newAlarmTimeFourChar);
       // Update DOM to display new time
-      const newAlarmTimeEl = document.createElement("p");
-      const newAlarmDeleteButton = document.createElement("button");
-      let newAlarmText = "Alarm time: " + convertToAMPM(newAlarmTimeFourChar);
       // TODO: AM times show up with 0, but pm times don't
-      newAlarmTimeEl.innerText = newAlarmText;
-      newAlarmDeleteButton.innerText = "x delete this alarm";
-      newAlarmTimeEl.style.display = "inline-block";
-      newAlarmDeleteButton.setAttribute("id", "group-1-delete-alarm-btn");
-      newAlarmDeleteButton.setAttribute("data-do", "delete-alarm");
-      document.getElementById(`${group}-alarm-times`).append(newAlarmTimeEl);
-      document
-        .getElementById(`${group}-alarm-times`)
-        .append(newAlarmDeleteButton);
+      let newAlarmText = "Alarm time: " + convertToAMPM(newAlarmTimeFourChar);
+      let newArgs = new AlarmCreateArgs(
+        group,
+        newAlarmTimeFourChar,
+        newAlarmText
+      );
+      createElementsFromRecipeObject(
+        newArgs.provideAlarmCreateArgs(),
+        document.getElementById(`${group}-alarm-times`)
+      );
+
       document.getElementById(`${group}-new-alarm-form`).reset();
     }
   },
@@ -635,6 +662,8 @@ const proceedWith = {
 
   "delete-alarm": function (evt) {
     cl("delete alarm");
+    cl(evt);
+    let group = groupOf(evt.target.id);
   },
 
   "save-page": function (evt) {
@@ -685,11 +714,6 @@ function handleClick(evt) {
   proceedWith[functionToDo](evt);
 }
 
-// function pulse() {
-//   pulseInterval = setInterval(cl("hello"), settings.pulsePeriod * 1000);
-//   // clearInterval(pulseInterval);
-// }
-
 documentBody.addEventListener("click", function (evt) {
   cl("body clicked");
   handleClick(evt);
@@ -701,41 +725,3 @@ function pulse() {
 }
 
 setInterval(pulse, settings.pulsePeriod * 1000);
-// setInterval(cl("hello"), settings.pulsePeriod * 1000);
-
-// pulse();
-// TODO store setting
-// TODO sort alarm times
-// TODO multiple groups
-// TODO rationalize variable names
-
-// once started, check current day and time against timers
-// check day
-// check current time is equal to or later than alarm
-
-// const isEarlierThanNow = function (testedTime) {
-//   let hour = testedTime[0] * 10 + testedTime[1] * 1;
-//   let minute = testedTime[3] * 10 + testedTime[4] * 1;
-//   let dN = new Date();
-//   let nowHour = dN.getHours();
-//   let nowMinute = dN.getMinutes();
-//   if (hour < nowHour || (hour == nowHour && minute <= nowMinute)) {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// };
-
-// alarm for any timers that are due
-// if (isEarlierThanNow("12:26")) {
-//   // makeAlarm();
-// }
-// change their appearance
-
-// const toDo = function () {
-//   proceedWith["make-alert-sound"]();
-// };
-
-// toDo();
-
-// timeToNextAlarm();

@@ -9,16 +9,29 @@
 
   <body>
     <div>
-      <p>Page has changed -- be sure to save!</p>
+      <!-- <p>Page has changed -- be sure to save!</p> -->
     </div>
     <!-- below should be a checkbox? or it disappears once set? -->
     <button data-do="make-alert-sound">activate alarms</button>
     <div class="clock-adjust">
-      <p>adjust for clock time</p>
-      <div>computer time is</div>
-      <p>enter clock time</p>
-      <input type="time" id="adjust-clock-input" required />
-      <p>difference is:</p>
+      <p>Adjustment for clock time</p>
+      <h3 id="computer-time">Computer time is:</h3>
+      <p>
+        If your clock time is different than the computer time, enter clock time
+        here
+      </p>
+      <form id="clock-adjust-form">
+        <label for="clock-adjust-input">Current clock time is:</label>
+        <input
+          type="time"
+          id="clock-adjust-input"
+          name="clock-adjust-input"
+          data-do="adjust-clock"
+          required
+        />
+        <button id="clock-adjust-btn" data-do="adjust-clock">enter</button>
+      </form>
+      <p>Alarms will adjust to this difference:</p>
     </div>
     <h2 id="countdown">Time until next alarm:</h2>
 
@@ -121,17 +134,11 @@
               + add alarm
             </button>
           </form>
+          <!-- TODO - style so that this disappears when an alarm has been set -->
           <h2>No alarms have been set in this group.</h2>
-          <div id="group-1-alarm-1430">
-            <p style="display: inline-block">2:30 PM alarm EXAMPLE</p>
-            <button id="group-1-delete-alarm-btn-1430" data-do="delete-alarm">
-              x delete this alarm
-            </button>
-          </div>
         </div>
       </div>
     </div>
-
     <button data-do="add-group">+ add group</button>
     <script src="js/script.js"></script>
   </body>

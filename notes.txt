@@ -58,3 +58,14 @@ adjust for clock time
   trigger webpage has changed
   determine next alarm
 
+// TODO CHECK FOR SLICE ERRORS
+
+// TODO store setting
+// TODO sort alarm times
+// TODO multiple groups
+// TODO rationalize variable names
+
+// once started, check current day and time against timers
+// check day
+// check current time is equal to or later than alarm
+
