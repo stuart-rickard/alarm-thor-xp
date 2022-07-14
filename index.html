@@ -119,6 +119,9 @@
         </div>
         <div class="alarm-times" id="group-1-alarm-times">
           <h3>Alarm Times:</h3>
+          <h2 id="group-1-no-alarm-note" data-show="yes">
+            No alarms have been set in this group.
+          </h2>
           <form id="group-1-new-alarm-form">
             <label for="group-1-new-alarm-input"
               >Choose a time for your alarm:</label
@@ -135,11 +138,19 @@
             </button>
           </form>
           <!-- TODO - style so that this disappears when an alarm has been set -->
-          <h2>No alarms have been set in this group.</h2>
         </div>
       </div>
     </div>
-    <button data-do="add-group">+ add group</button>
+    <form id="add-group-form">
+      <label for="new-group-name-input">Name for new group:</label>
+      <input
+        type="text"
+        id="new-group-name-input"
+        name="new-group-name-input"
+        required
+      />
+      <button data-do="add-group">+ add group</button>
+    </form>
     <script src="js/script.js"></script>
   </body>
 </html>

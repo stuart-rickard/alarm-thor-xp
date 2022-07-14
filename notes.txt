@@ -1,3 +1,20 @@
+Priorities
+- works for Thor
+  simple storage
+  simple styling
+  sort alarm times
+  fix location of add group button
+  test / debug
+- cleanup
+  variable names
+  not needed attributes
+  move code around
+- improvements
+  select sound
+  better styling
+  chrome extension
+
+
 storing settings
   strategy one:
     create json from settings and keep dom synced with settings
@@ -10,26 +27,7 @@ storing settings
       make it easier to save the webpage (naming of file?)
       update code to reference the dom instead of settings
       
-
-controlling the order of elements
-  fix location of add group button
-
 update data fields to control style
-
-delete alarm
-  check data fields
-  get element to be deleted
-  delete that element
-
-delete group
-  check data fields
-  get element (group) to be deleted
-  delete that group
-
-styling so that inactive look inactive and v/v
-
-// within saved file
-  on load, create activate condition
 
 activate
   turn on audioContext
@@ -40,23 +38,7 @@ activate
   // unhide elements?
   check whether clock time is correct?
 
-// sort alarm times
-
 instructions to save webpage
-
-cleanup
-  variable names
-  not needed attributes
-  move code around
-
-debug
-
-adjust for clock time
-  take entry of current clock time
-  compare to computer time
-  update adjust alarm time in status object
-  trigger webpage has changed
-  determine next alarm
 
 // TODO CHECK FOR SLICE ERRORS
 
@@ -64,8 +46,4 @@ adjust for clock time
 // TODO sort alarm times
 // TODO multiple groups
 // TODO rationalize variable names
-
-// once started, check current day and time against timers
-// check day
-// check current time is equal to or later than alarm
 

@@ -34,3 +34,11 @@
   border: solid;
   border-color: blue;
 }
+
+[data-show="yes"] {
+  display: unset;
+}
+
+[data-show="no"] {
+  display: none;
+}

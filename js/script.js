@@ -20,6 +20,7 @@ let settings = {
   pulsePeriod: 1, // seconds; must be less than 60
   groups: {
     "group-1": {
+      name: "Group 1",
       groupActive: true,
       activeDays: {
         sun: false,
@@ -289,255 +290,267 @@ class AlarmCreateArgs {
   }
 }
 
-// This is not a pure function because it uses a variable that is outside its scope
 class GroupCreateArgs {
-  1 = {
-    attributes: {
-      class: "group",
-      id: `group-${settings.nextGroup}`,
-    },
+  constructor(group, groupName) {
+    this.group = group;
+    this.groupName = groupName;
+  }
 
-    childElements: {
+  provideGroupCreateArgs() {
+    return {
       1: {
-        type: "p",
-        // styles,
-        // attributes,
-        props: { innerText: `Group ${settings.nextGroup}` },
-        // eventHandlers,
-        // appendTo:
-      },
-      2: {
-        type: "button",
-        // styles,
         attributes: {
-          "data-do": "delete-group",
-          id: `group-${settings.nextGroup}-delete-btn`,
+          class: "group",
+          id: `${this.group}`,
         },
-        props: { innerText: "x delete group" },
-        // eventHandlers,
-        // appendTo:
-      },
-      3: {
-        type: "p",
-        props: { innerText: "Turn group on or off" },
-      },
-      4: {
-        attributes: {
-          class: "radio-buttons",
-        },
+
         childElements: {
           1: {
-            type: "input",
-            attributes: {
-              type: "radio",
-              id: `group-${settings.nextGroup}-radio-on`,
-              name: `active-${settings.nextGroup}`,
-              "data-do": "turn-group-on",
-              checked: "",
-            },
+            type: "p",
+            // styles,
+            // attributes,
+            props: { innerText: this.groupName },
+            // eventHandlers,
+            // appendTo:
           },
           2: {
-            type: "label",
+            type: "button",
+            // styles,
             attributes: {
-              for: `group-${settings.nextGroup}-radio-on`,
+              "data-do": "delete-group",
+              id: `${this.group}-delete-btn`,
             },
-            props: { innerText: "On" },
+            props: { innerText: "x delete group" },
+            // eventHandlers,
+            // appendTo:
           },
           3: {
-            type: "input",
-            attributes: {
-              type: "radio",
-              id: `group-${settings.nextGroup}-radio-off`,
-              name: `active-${settings.nextGroup}`,
-              "data-do": "turn-group-off",
-            },
+            type: "p",
+            props: { innerText: "Turn group on or off" },
           },
           4: {
-            type: "label",
             attributes: {
-              for: `group-${settings.nextGroup}-radio-off`,
-            },
-            props: { innerText: "Off" },
-          },
-        },
-      },
-      5: {
-        type: "p",
-        props: { innerText: "Select active days" },
-      },
-      6: {
-        attributes: { class: "weekDays-selector" },
-        childElements: {
-          1: {
-            type: "input",
-            attributes: {
-              type: "checkbox",
-              id: `group-${settings.nextGroup}-day-sun`,
-              class: "weekday",
-              "data-do": "toggle-day",
-            },
-          },
-          2: {
-            type: "label",
-            attributes: {
-              for: `group-${settings.nextGroup}-day-sun`,
-            },
-            props: { innerText: "S" },
-          },
-          3: {
-            type: "input",
-            attributes: {
-              type: "checkbox",
-              id: `group-${settings.nextGroup}-day-mon`,
-              class: "weekday",
-              "data-do": "toggle-day",
-              checked: "",
-            },
-          },
-          4: {
-            type: "label",
-            attributes: {
-              for: `group-${settings.nextGroup}-day-mon`,
-            },
-            props: { innerText: "M" },
-          },
-          5: {
-            type: "input",
-            attributes: {
-              type: "checkbox",
-              id: `group-${settings.nextGroup}-day-tue`,
-              class: "weekday",
-              "data-do": "toggle-day",
-              checked: "",
-            },
-          },
-          6: {
-            type: "label",
-            attributes: {
-              for: `group-${settings.nextGroup}-day-tue`,
-            },
-            props: { innerText: "T" },
-          },
-          7: {
-            type: "input",
-            attributes: {
-              type: "checkbox",
-              id: `group-${settings.nextGroup}-day-wed`,
-              class: "weekday",
-              "data-do": "toggle-day",
-              checked: "",
-            },
-          },
-          8: {
-            type: "label",
-            attributes: {
-              for: `group-${settings.nextGroup}-day-wed`,
-            },
-            props: { innerText: "W" },
-          },
-          9: {
-            type: "input",
-            attributes: {
-              type: "checkbox",
-              id: `group-${settings.nextGroup}-day-thu`,
-              class: "weekday",
-              "data-do": "toggle-day",
-              checked: "",
-            },
-          },
-          10: {
-            type: "label",
-            attributes: {
-              for: `group-${settings.nextGroup}-day-thu`,
-            },
-            props: { innerText: "T" },
-          },
-          11: {
-            type: "input",
-            attributes: {
-              type: "checkbox",
-              id: `group-${settings.nextGroup}-day-fri`,
-              class: "weekday",
-              "data-do": "toggle-day",
-              checked: "",
-            },
-          },
-          12: {
-            type: "label",
-            attributes: {
-              for: `group-${settings.nextGroup}-day-fri`,
-            },
-            props: { innerText: "F" },
-          },
-          13: {
-            type: "input",
-            attributes: {
-              type: "checkbox",
-              id: `group-${settings.nextGroup}-day-sat`,
-              class: "weekday",
-              "data-do": "toggle-day",
-            },
-          },
-          14: {
-            type: "label",
-            attributes: {
-              for: `group-${settings.nextGroup}-day-sat`,
-            },
-            props: { innerText: "S" },
-          },
-        },
-      },
-      7: {
-        attributes: {
-          class: "alarm-times",
-          id: `group-${settings.nextGroup}-alarm-times`,
-        },
-        childElements: {
-          1: {
-            type: "h3",
-            props: { innerText: "Alarm Times:" },
-          },
-          2: {
-            type: "form",
-            attributes: {
-              id: `group-${settings.nextGroup}-new-alarm-form`,
+              class: "radio-buttons",
             },
             childElements: {
               1: {
-                type: "label",
-                attributes: {
-                  for: `group-${settings.nextGroup}-new-alarm-input`,
-                },
-                props: { innerText: "Choose a time for your alarm:" },
-              },
-              2: {
                 type: "input",
                 attributes: {
-                  type: "time",
-                  id: `group-${settings.nextGroup}-new-alarm-input`,
-                  name: `group-${settings.nextGroup}-new-alarm-input`,
-                  "data-do": "add-alarm",
-                  required: "",
+                  type: "radio",
+                  id: `${this.group}-radio-on`,
+                  name: `active-${settings.nextGroup}`,
+                  "data-do": "turn-group-on",
+                  checked: "",
                 },
               },
-              3: {
-                type: "button",
+              2: {
+                type: "label",
                 attributes: {
-                  id: `group-${settings.nextGroup}-add-alarm-btn`,
-                  "data-do": "add-alarm",
+                  for: `${this.group}-radio-on`,
                 },
-                props: { innerText: "+ add alarm" },
+                props: { innerText: "On" },
+              },
+              3: {
+                type: "input",
+                attributes: {
+                  type: "radio",
+                  id: `${this.group}-radio-off`,
+                  name: `active-${settings.nextGroup}`,
+                  "data-do": "turn-group-off",
+                },
+              },
+              4: {
+                type: "label",
+                attributes: {
+                  for: `${this.group}-radio-off`,
+                },
+                props: { innerText: "Off" },
               },
             },
           },
-          3: {
-            type: "h2",
-            props: { innerText: "No alarms have been set in this group" },
+          5: {
+            type: "p",
+            props: { innerText: "Select active days" },
+          },
+          6: {
+            attributes: { class: "weekDays-selector" },
+            childElements: {
+              1: {
+                type: "input",
+                attributes: {
+                  type: "checkbox",
+                  id: `${this.group}-day-sun`,
+                  class: "weekday",
+                  "data-do": "toggle-day",
+                },
+              },
+              2: {
+                type: "label",
+                attributes: {
+                  for: `${this.group}-day-sun`,
+                },
+                props: { innerText: "S" },
+              },
+              3: {
+                type: "input",
+                attributes: {
+                  type: "checkbox",
+                  id: `${this.group}-day-mon`,
+                  class: "weekday",
+                  "data-do": "toggle-day",
+                  checked: "",
+                },
+              },
+              4: {
+                type: "label",
+                attributes: {
+                  for: `${this.group}-day-mon`,
+                },
+                props: { innerText: "M" },
+              },
+              5: {
+                type: "input",
+                attributes: {
+                  type: "checkbox",
+                  id: `${this.group}-day-tue`,
+                  class: "weekday",
+                  "data-do": "toggle-day",
+                  checked: "",
+                },
+              },
+              6: {
+                type: "label",
+                attributes: {
+                  for: `${this.group}-day-tue`,
+                },
+                props: { innerText: "T" },
+              },
+              7: {
+                type: "input",
+                attributes: {
+                  type: "checkbox",
+                  id: `${this.group}-day-wed`,
+                  class: "weekday",
+                  "data-do": "toggle-day",
+                  checked: "",
+                },
+              },
+              8: {
+                type: "label",
+                attributes: {
+                  for: `${this.group}-day-wed`,
+                },
+                props: { innerText: "W" },
+              },
+              9: {
+                type: "input",
+                attributes: {
+                  type: "checkbox",
+                  id: `${this.group}-day-thu`,
+                  class: "weekday",
+                  "data-do": "toggle-day",
+                  checked: "",
+                },
+              },
+              10: {
+                type: "label",
+                attributes: {
+                  for: `${this.group}-day-thu`,
+                },
+                props: { innerText: "T" },
+              },
+              11: {
+                type: "input",
+                attributes: {
+                  type: "checkbox",
+                  id: `${this.group}-day-fri`,
+                  class: "weekday",
+                  "data-do": "toggle-day",
+                  checked: "",
+                },
+              },
+              12: {
+                type: "label",
+                attributes: {
+                  for: `${this.group}-day-fri`,
+                },
+                props: { innerText: "F" },
+              },
+              13: {
+                type: "input",
+                attributes: {
+                  type: "checkbox",
+                  id: `${this.group}-day-sat`,
+                  class: "weekday",
+                  "data-do": "toggle-day",
+                },
+              },
+              14: {
+                type: "label",
+                attributes: {
+                  for: `${this.group}-day-sat`,
+                },
+                props: { innerText: "S" },
+              },
+            },
+          },
+          7: {
+            attributes: {
+              class: "alarm-times",
+              id: `${this.group}-alarm-times`,
+            },
+            childElements: {
+              1: {
+                type: "h3",
+                props: { innerText: "Alarm Times:" },
+              },
+              2: {
+                type: "h2",
+                attributes: {
+                  id: `${this.group}-no-alarm-note`,
+                  "data-show": "yes",
+                },
+                props: { innerText: "No alarms have been set in this group" },
+              },
+              3: {
+                type: "form",
+                attributes: {
+                  id: `${this.group}-new-alarm-form`,
+                },
+                childElements: {
+                  1: {
+                    type: "label",
+                    attributes: {
+                      for: `${this.group}-new-alarm-input`,
+                    },
+                    props: { innerText: "Choose a time for your alarm:" },
+                  },
+                  2: {
+                    type: "input",
+                    attributes: {
+                      type: "time",
+                      id: `${this.group}-new-alarm-input`,
+                      name: `${this.group}-new-alarm-input`,
+                      "data-do": "add-alarm",
+                      required: "",
+                    },
+                  },
+                  3: {
+                    type: "button",
+                    attributes: {
+                      id: `${this.group}-add-alarm-btn`,
+                      "data-do": "add-alarm",
+                    },
+                    props: { innerText: "+ add alarm" },
+                  },
+                },
+              },
+            },
           },
         },
       },
-    },
-  };
+    };
+  }
 }
 
 // createElementsFromRecipeObject function
@@ -547,7 +560,7 @@ const createElementsFromRecipeObject = function (recipeObject, parentElement) {
       ...recipeObject[key],
       appendTo: parentElement,
     });
-    cl("createdElement is: " + createdElement);
+    // cl("createdElement is: " + createdElement);
     // if there's a childElements property,
     if (recipeObject[key].childElements) {
       // send it to createElementsFromRecipeObject
@@ -568,7 +581,7 @@ const createElement = function ({
   eventHandlers,
   appendTo,
 }) {
-  cl("type is: " + type);
+  // cl("type is: " + type);
   // TODO resolve whether it's OK to duplicate this code at the createElementsFromRecipeObject level
   let elementType = type || "div";
   let elementStyles = styles || {};
@@ -591,7 +604,7 @@ const createElement = function ({
   }
   elementAppendTo.append(element);
 
-  cl(element);
+  // cl(element);
 
   return element;
 };
@@ -634,6 +647,9 @@ const proceedWith = {
         document.getElementById(`${group}-alarm-times`)
       );
 
+      document
+        .getElementById(`${group}-no-alarm-note`)
+        .setAttribute("data-show", "no");
       document.getElementById(`${group}-new-alarm-form`).reset();
     }
     timeToNextAlarm();
@@ -700,7 +716,15 @@ const proceedWith = {
   "delete-alarm": function (evt) {
     evt.preventDefault();
     let alarmDivId = evt.target.id.slice(11);
-    // TODO Update settings XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    let group = groupOf(alarmDivId);
+    let alarmTime = alarmDivId.slice(-4);
+    let alarmsArray = settings.groups[group].alarms;
+    alarmsArray.splice(alarmsArray.indexOf(alarmTime), 1);
+    if (!alarmsArray.length) {
+      document
+        .getElementById(`${group}-no-alarm-note`)
+        .setAttribute("data-show", "yes");
+    }
     document.getElementById(alarmDivId).remove();
     timeToNextAlarm();
   },
@@ -712,18 +736,19 @@ const proceedWith = {
   "delete-group": function (evt) {
     let groupDivId = evt.target.id.slice(0, -11);
     document.getElementById(groupDivId).remove();
-    // TODO Update settings XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    delete settings.groups[groupDivId];
     timeToNextAlarm();
   },
 
   "add-group": function (evt) {
     evt.preventDefault();
-    cl("add group");
     let group = `group-${settings.nextGroup}`;
-    cl("group is: " + group);
+    let nameInput = document.getElementById("new-group-name-input").value;
+    cl(nameInput);
     settings.groups = {
       ...settings.groups,
       [group]: {
+        name: nameInput,
         groupActive: true,
         activeDays: {
           sun: false,
@@ -738,9 +763,9 @@ const proceedWith = {
       },
     };
     cl(settings);
-    let newArgs = new GroupCreateArgs(); // update groupCreateArgs
+    let newArgs = new GroupCreateArgs(group, nameInput); // update groupCreateArgs
     createElementsFromRecipeObject(
-      newArgs,
+      newArgs.provideGroupCreateArgs(),
       // group,
       documentBody
     );
