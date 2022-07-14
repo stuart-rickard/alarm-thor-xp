@@ -272,6 +272,7 @@ class AlarmCreateArgs {
         childElements: {
           1: {
             type: "p",
+            attributes: { class: "button-after" },
             props: {
               innerText: this.newAlarmText,
             },
@@ -306,9 +307,9 @@ class GroupCreateArgs {
 
         childElements: {
           1: {
-            type: "p",
+            type: "h2",
             // styles,
-            // attributes,
+            attributes: { class: "button-after" },
             props: { innerText: this.groupName },
             // eventHandlers,
             // appendTo:
@@ -324,10 +325,10 @@ class GroupCreateArgs {
             // eventHandlers,
             // appendTo:
           },
-          3: {
-            type: "p",
-            props: { innerText: "Turn group on or off" },
-          },
+          // 3: {
+          //   type: "p",
+          //   props: { innerText: "Turn group on or off" },
+          // },
           4: {
             attributes: {
               class: "radio-buttons",
@@ -348,7 +349,7 @@ class GroupCreateArgs {
                 attributes: {
                   for: `${this.group}-radio-on`,
                 },
-                props: { innerText: "On" },
+                props: { innerText: "Group On" },
               },
               3: {
                 type: "input",
@@ -364,7 +365,7 @@ class GroupCreateArgs {
                 attributes: {
                   for: `${this.group}-radio-off`,
                 },
-                props: { innerText: "Off" },
+                props: { innerText: "Group Off" },
               },
             },
           },
@@ -500,10 +501,10 @@ class GroupCreateArgs {
               id: `${this.group}-alarm-times`,
             },
             childElements: {
-              1: {
-                type: "h3",
-                props: { innerText: "Alarm Times:" },
-              },
+              // 1: {
+              //   type: "h3",
+              //   props: { innerText: "Alarm Times:" },
+              // },
               2: {
                 type: "h2",
                 attributes: {
@@ -618,6 +619,11 @@ const proceedWith = {
     cl("hello from make alert sound");
     audioContextActivated = true;
     makeAlarm();
+    document
+      .getElementById("activate-alarms-btn")
+      .setAttribute("class", "dormant");
+    document.getElementById("activate-alarms-btn").innerText =
+      "AudioContext started; if you did not hear alarm, check speakers and try again";
   },
 
   "data-do-is-null": function (evt) {
@@ -647,9 +653,8 @@ const proceedWith = {
         document.getElementById(`${group}-alarm-times`)
       );
 
-      document
-        .getElementById(`${group}-no-alarm-note`)
-        .setAttribute("data-show", "no");
+      document.getElementById(`${group}-no-alarm-note`).innerText =
+        "Alarm Times:";
       document.getElementById(`${group}-new-alarm-form`).reset();
     }
     timeToNextAlarm();
@@ -721,9 +726,8 @@ const proceedWith = {
     let alarmsArray = settings.groups[group].alarms;
     alarmsArray.splice(alarmsArray.indexOf(alarmTime), 1);
     if (!alarmsArray.length) {
-      document
-        .getElementById(`${group}-no-alarm-note`)
-        .setAttribute("data-show", "yes");
+      document.getElementById(`${group}-no-alarm-note`).innerText =
+        "No alarms have been set in this group";
     }
     document.getElementById(alarmDivId).remove();
     timeToNextAlarm();
@@ -743,7 +747,8 @@ const proceedWith = {
   "add-group": function (evt) {
     evt.preventDefault();
     let group = `group-${settings.nextGroup}`;
-    let nameInput = document.getElementById("new-group-name-input").value;
+    let nameInput =
+      document.getElementById("new-group-name-input").value || "Unnamed Group";
     cl(nameInput);
     settings.groups = {
       ...settings.groups,
@@ -767,7 +772,7 @@ const proceedWith = {
     createElementsFromRecipeObject(
       newArgs.provideGroupCreateArgs(),
       // group,
-      documentBody
+      document.getElementById("groups")
     );
     settings.nextGroup++;
   },

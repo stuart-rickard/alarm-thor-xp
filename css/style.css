@@ -1,3 +1,16 @@
+body {
+  font-family: Sans-serif;
+}
+
+div {
+  padding: 5px;
+  margin: 8px;
+}
+
+button {
+  cursor: pointer;
+}
+
 .weekDays-selector input {
   display: none !important;
 }
@@ -19,24 +32,65 @@
   color: #ffffff;
 }
 
+.groups {
+  border: solid;
+  border-color: gray;
+}
+
 .group {
-  outline: solid;
-  outline-color: red;
+  border: solid;
+  border-color: green;
+  background-color: whitesmoke;
 }
 
 .clock-adjust {
-  outline: solid;
-  outline-color: orange;
+  border: solid;
+  border-color: gray;
+  background-color: whitesmoke;
 }
 
 .alarm-times {
   display: flexbox;
   border: solid;
   border-color: blue;
+  background-color: white;
 }
 
+.button-after {
+  display: inline-block;
+  margin-right: 2em;
+}
+
+#add-group-form {
+  border: solid;
+  border-color: orange;
+  padding: 5px;
+  margin: 8px;
+}
+
+#activate-alarms-btn {
+  padding: 5px;
+  margin: 8px;
+  border: solid;
+  border-color: red;
+  font-size: large;
+  color: red;
+  /* background-color: yellowgreen; */
+}
+
+#activate-alarms-btn.dormant {
+  padding: 5px;
+  margin: 8px;
+  border: solid;
+  border-color: gray;
+  font-size: medium;
+  color: black;
+  /* background-color: yellowgreen; */
+}
+
+/* data-show is not used XXXXXXXXXXXXXXXXXXXXX */
 [data-show="yes"] {
-  display: unset;
+  /* display: unset; */
 }
 
 [data-show="no"] {

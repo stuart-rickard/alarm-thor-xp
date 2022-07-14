@@ -12,10 +12,12 @@
       <!-- <p>Page has changed -- be sure to save!</p> -->
     </div>
     <!-- below should be a checkbox? or it disappears once set? -->
-    <button data-do="make-alert-sound">activate alarms</button>
+    <button id="activate-alarms-btn" data-do="make-alert-sound">
+      ACTIVATE ALARMS
+    </button>
     <div class="clock-adjust">
-      <p>Adjustment for clock time</p>
-      <h3 id="computer-time">Computer time is:</h3>
+      <!-- <p>Adjustment for clock time</p> -->
+      <!-- <h3 id="computer-time">Computer time is:</h3> -->
       <p>
         If your clock time is different than the computer time, enter clock time
         here
@@ -37,12 +39,12 @@
 
     <div class="groups" id="groups">
       <div class="group" id="group-1">
-        <p>Group 1</p>
+        <h2 class="button-after">Group 1</h2>
         <button id="group-1-delete-btn" data-do="delete-group">
           x delete group
         </button>
 
-        <p>Turn group on or off:</p>
+        <!-- <p>Turn group on or off:</p> -->
         <div class="radio-buttons">
           <input
             type="radio"
@@ -51,14 +53,14 @@
             data-do="turn-group-on"
             checked=""
           />
-          <label for="group-1-radio-on">On</label>
+          <label for="group-1-radio-on">Group On</label>
           <input
             type="radio"
             id="group-1-radio-off"
             data-do="turn-group-off"
             name="active-1"
           />
-          <label for="group-1-radio-off">Off</label>
+          <label for="group-1-radio-off">Group Off</label>
         </div>
         <p>Select active days</p>
         <div class="weekDays-selector">
@@ -118,7 +120,7 @@
           <label for="group-1-day-sat">S</label>
         </div>
         <div class="alarm-times" id="group-1-alarm-times">
-          <h3>Alarm Times:</h3>
+          <!-- <h3>Alarm Times:</h3> -->
           <h2 id="group-1-no-alarm-note" data-show="yes">
             No alarms have been set in this group.
           </h2>
