@@ -35,17 +35,20 @@ button {
 .groups {
   border: solid;
   border-color: gray;
+  border-radius: 10px;
 }
 
 .group {
   border: solid;
   border-color: green;
+  border-radius: 10px;
   background-color: whitesmoke;
 }
 
 .clock-adjust {
   border: solid;
   border-color: gray;
+  border-radius: 10px;
   background-color: whitesmoke;
 }
 
@@ -53,6 +56,7 @@ button {
   display: flexbox;
   border: solid;
   border-color: blue;
+  border-radius: 10px;
   background-color: white;
 }
 
@@ -64,6 +68,7 @@ button {
 #add-group-form {
   border: solid;
   border-color: orange;
+  border-radius: 10px;
   padding: 5px;
   margin: 8px;
 }
@@ -73,6 +78,7 @@ button {
   margin: 8px;
   border: solid;
   border-color: red;
+  border-radius: 10px;
   font-size: large;
   color: red;
   /* background-color: yellowgreen; */
@@ -82,6 +88,7 @@ button {
   padding: 5px;
   margin: 8px;
   border: solid;
+  border-radius: 10px;
   border-color: gray;
   font-size: medium;
   color: black;

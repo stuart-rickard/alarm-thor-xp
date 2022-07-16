@@ -257,10 +257,11 @@ function timeToNextAlarm() {
 }
 
 class AlarmCreateArgs {
-  constructor(group, alarmTime, newAlarmText) {
+  constructor(group, alarmTime, newAlarmText, insertBefore) {
     this.group = group;
     this.alarmTime = alarmTime;
     this.newAlarmText = newAlarmText;
+    this.insertBefore = insertBefore;
   }
 
   provideAlarmCreateArgs() {
@@ -269,6 +270,7 @@ class AlarmCreateArgs {
         attributes: {
           id: `${this.group}-alarm-${this.alarmTime}`,
         },
+        insertBefore: this.insertBefore,
         childElements: {
           1: {
             type: "p",
@@ -581,6 +583,7 @@ const createElement = function ({
   props,
   eventHandlers,
   appendTo,
+  insertBefore,
 }) {
   // cl("type is: " + type);
   // TODO resolve whether it's OK to duplicate this code at the createElementsFromRecipeObject level
@@ -590,6 +593,8 @@ const createElement = function ({
   let elementProps = props || {};
   let elementEventHandlers = eventHandlers || {};
   let elementAppendTo = appendTo || "body";
+  let elementInsertBefore = insertBefore || null;
+
   let element = document.createElement(elementType);
   for (let key in elementStyles) {
     element.style[key] = elementStyles[key];
@@ -603,7 +608,7 @@ const createElement = function ({
   for (let key in elementEventHandlers) {
     element.addEventListener(key, elementEventHandlers[key]);
   }
-  elementAppendTo.append(element);
+  elementAppendTo.insertBefore(element, elementInsertBefore);
 
   // cl(element);
 
@@ -640,14 +645,32 @@ const proceedWith = {
       // Add time to status object
       let newAlarmTimeFourChar = convertToFourCharTime(newAlarmTimeFiveChar);
       settings.groups[group].alarms.push(newAlarmTimeFourChar);
+      settings.groups[group].alarms.sort((a, b) => a - b);
+      let followingSiblingIndex =
+        settings.groups[group].alarms.indexOf(newAlarmTimeFourChar) + 2;
+
+      // document.getElementById(`${group}-alarm-times`)
+      // XXXXXXXXXXXXXXXXXXXXXXXX use above to find insertBefore element
+      cl(followingSiblingIndex);
+      // let insertBefore = timeInput.children.item(followingSiblingIndex);
+      let insertBefore = document.getElementById(`${group}-alarm-times`)
+        .children[followingSiblingIndex];
+      // let insertBefore = timeInput.children;
+      cl(insertBefore);
+      cl("==============");
+
+      // let insertBefore = null;
+
       // Update DOM to display new time
       // TODO: AM times show up with 0, but pm times don't
       let newAlarmText = "Alarm time: " + convertToAMPM(newAlarmTimeFourChar);
       let newArgs = new AlarmCreateArgs(
         group,
         newAlarmTimeFourChar,
-        newAlarmText
+        newAlarmText,
+        insertBefore
       );
+      cl(newArgs.provideAlarmCreateArgs());
       createElementsFromRecipeObject(
         newArgs.provideAlarmCreateArgs(),
         document.getElementById(`${group}-alarm-times`)

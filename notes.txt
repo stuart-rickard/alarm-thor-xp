@@ -1,9 +1,14 @@
 Priorities
 - works for Thor
   simple storage
-  simple styling
-  sort alarm times
-  fix location of add group button
+    address start up
+    address storage
+      local storage
+        store settings in local storage
+        translator to rehydrate settings
+      local file
+        store settings inside the local file (html)
+        translator to rehydrate settings
   test / debug
 - cleanup
   variable names
@@ -27,8 +32,6 @@ storing settings
       make it easier to save the webpage (naming of file?)
       update code to reference the dom instead of settings
       
-update data fields to control style
-
 activate
   turn on audioContext
   update status object
@@ -39,11 +42,3 @@ activate
   check whether clock time is correct?
 
 instructions to save webpage
-
-// TODO CHECK FOR SLICE ERRORS
-
-// TODO store setting
-// TODO sort alarm times
-// TODO multiple groups
-// TODO rationalize variable names
-
