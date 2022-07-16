@@ -101,11 +101,10 @@ function makeAlarm() {
 }
 
 function convertToAMPM(fourCharTime) {
-  // TODO deal with new day and with restart on same day
-
   let hourString = fourCharTime[0] + fourCharTime[1];
+  hour = Number(hourString);
   // AM times
-  if (hourString < 12) {
+  if (hour < 12) {
     // Midnight
     if (hourString == 0) {
       let ampmTime = "12:" + fourCharTime[2] + fourCharTime[3] + " AM";
@@ -113,12 +112,11 @@ function convertToAMPM(fourCharTime) {
       // After midnight
     } else {
       let ampmTime =
-        hourString + ":" + fourCharTime[2] + fourCharTime[3] + " AM";
+        hour.toString() + ":" + fourCharTime[2] + fourCharTime[3] + " AM";
       return ampmTime;
     }
     // PM times
   } else {
-    hour = Number(hourString);
     // Reduce hour by 12, except noon hour
     if (hour > 12) {
       hour = hour - 12;
@@ -164,8 +162,6 @@ function secondsToNextAlarm(date) {
   let nowHour = date.getHours();
   let nowMinute = date.getMinutes();
   let nowSeconds = date.getSeconds();
-  // TODO - resolve line below.
-  // let nextAlarm = false;
   let nextAlarm = settings.timeOfNextAlarmToday;
   if (nextAlarm) {
     let nowTotalSeconds = nowHour * 3600 + nowMinute * 60 + nowSeconds;
@@ -210,7 +206,7 @@ function secondsToNextAlarm(date) {
 function timeToNextAlarm() {
   settings.timeOfNextAlarmToday = false; // reset next alarm time
   let dN = new Date();
-  let nowTimeFourChar = convertDateToFourCharTime(dN);
+  let nowTimeFourChar = convertDateToFourCharTime(dN) + settings.clockDelta;
   let nowDay = dN.getDay();
   nowDay = dayStringAssign[nowDay];
   let alarmToTest = "";
@@ -594,8 +590,6 @@ const createElement = function ({
   appendTo,
   insertBefore,
 }) {
-  // cl("type is: " + type);
-  // TODO resolve whether it's OK to duplicate this code at the createElementsFromRecipeObject level
   let elementType = type || "div";
   let elementStyles = styles || {};
   let elementAttributes = attributes || {};
@@ -639,7 +633,6 @@ const proceedWith = {
         settings.groups[group].alarms.indexOf(newAlarmTimeFourChar) + 2;
       let insertBefore = document.getElementById(`${group}-alarm-times`)
         .children[followingSiblingIndex];
-      // TODO: AM times show up with 0, but pm times don't
       let newAlarmText = "Alarm time: " + convertToAMPM(newAlarmTimeFourChar);
       let newArgs = new AlarmCreateArgs(
         group,
@@ -709,19 +702,24 @@ const proceedWith = {
     let newAlarmTimeFiveChar = timeInput.value;
     let dN = new Date();
     let nowTimeFourChar = convertDateToFourCharTime(dN);
+    cl(nowTimeFourChar);
 
     if (newAlarmTimeFiveChar) {
       // Add time to status object
       let newAlarmTimeFourChar = convertToFourCharTime(newAlarmTimeFiveChar);
+      cl(newAlarmTimeFiveChar);
       let nowTimeTotalMinutes =
-        nowTimeFourChar.slice(0, 2) * 60 + nowTimeFourChar.slice(-2);
+        Number(nowTimeFourChar.slice(0, 2)) * 60 +
+        Number(nowTimeFourChar.slice(-2));
+      cl(nowTimeTotalMinutes);
       let clockTimeTotalMinutes =
-        newAlarmTimeFourChar.slice(0, 2) * 60 + newAlarmTimeFourChar.slice(-2);
+        Number(newAlarmTimeFourChar.slice(0, 2)) * 60 +
+        Number(newAlarmTimeFourChar.slice(-2));
+      cl(clockTimeTotalMinutes);
       let adjustmentMinutes = nowTimeTotalMinutes - clockTimeTotalMinutes;
       cl(adjustmentMinutes);
       settings.clockDelta = adjustmentMinutes;
       // Update DOM to display new time
-      // TODO: AM times show up with 0, but pm times don't
 
       document.getElementById("clock-adjust-form").reset();
       document.getElementById("clock-adjust-status").innerText =
@@ -864,8 +862,24 @@ if (groups) {
     }
     // --- create alarms within groups
     if (groups[groupNumber].alarms.length) {
-      for (let alarm in groups[groupNumber].alarms) {
+      for (let alarm of groups[groupNumber].alarms) {
         cl(alarm);
+        let newAlarmText = "Alarm time: " + convertToAMPM(alarm);
+
+        let newArgs = new AlarmCreateArgs(
+          groupNumber,
+          alarm,
+          newAlarmText,
+          null
+        );
+        cl(newArgs.provideAlarmCreateArgs());
+        createElementsFromRecipeObject(
+          newArgs.provideAlarmCreateArgs(),
+          document.getElementById(`${groupNumber}-alarm-times`)
+        );
+
+        document.getElementById(`${groupNumber}-no-alarm-note`).innerText =
+          "Alarm Times:";
       }
     }
   }
