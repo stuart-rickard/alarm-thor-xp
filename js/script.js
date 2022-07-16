@@ -19,22 +19,22 @@ let settings = {
   },
   pulsePeriod: 1, // seconds; must be less than 60
   groups: {
-    "group-1": {
-      name: "Group 1",
-      groupActive: true,
-      activeDays: {
-        sun: false,
-        mon: true,
-        tue: true,
-        wed: true,
-        thu: true,
-        fri: true,
-        sat: false,
-      },
-      alarms: [],
-    },
+    // "group-1": {
+    //   name: "Group 1",
+    //   groupActive: true,
+    //   activeDays: {
+    //     sun: false,
+    //     mon: true,
+    //     tue: true,
+    //     wed: true,
+    //     thu: true,
+    //     fri: true,
+    //     sat: false,
+    //   },
+    //   alarms: [],
+    // },
   },
-  nextGroup: 2,
+  // nextGroup: 2,
 };
 
 let audioContextActivated = false;
@@ -341,7 +341,7 @@ class GroupCreateArgs {
                 attributes: {
                   type: "radio",
                   id: `${this.group}-radio-on`,
-                  name: `active-${settings.nextGroup}`,
+                  name: `active-${this.group}`,
                   "data-do": "turn-group-on",
                   checked: "",
                 },
@@ -358,7 +358,7 @@ class GroupCreateArgs {
                 attributes: {
                   type: "radio",
                   id: `${this.group}-radio-off`,
-                  name: `active-${settings.nextGroup}`,
+                  name: `active-${this.group}`,
                   "data-do": "turn-group-off",
                 },
               },
@@ -556,6 +556,15 @@ class GroupCreateArgs {
   }
 }
 
+function addGroup(group, nameInput) {
+  let newArgs = new GroupCreateArgs(group, nameInput); // update groupCreateArgs
+  createElementsFromRecipeObject(
+    newArgs.provideGroupCreateArgs(),
+    // group,
+    document.getElementById("groups")
+  );
+}
+
 // createElementsFromRecipeObject function
 const createElementsFromRecipeObject = function (recipeObject, parentElement) {
   for (let key in recipeObject) {
@@ -616,26 +625,6 @@ const createElement = function ({
 };
 
 const proceedWith = {
-  // "next-alarm": function () {
-  //   timeToNextAlarm();
-  // },
-
-  "make-alert-sound": function (evt) {
-    cl("hello from make alert sound");
-    audioContextActivated = true;
-    makeAlarm();
-    document
-      .getElementById("activate-alarms-btn")
-      .setAttribute("class", "dormant");
-    document.getElementById("activate-alarms-btn").innerText =
-      "AudioContext started; if you did not hear alarm, check speakers and try again";
-  },
-
-  "data-do-is-null": function (evt) {
-    cl("There is nothing to do for this click location.");
-    timeToNextAlarm();
-  },
-
   "add-alarm": function (evt) {
     evt.preventDefault();
     let group = groupOf(evt.target.id);
@@ -648,20 +637,8 @@ const proceedWith = {
       settings.groups[group].alarms.sort((a, b) => a - b);
       let followingSiblingIndex =
         settings.groups[group].alarms.indexOf(newAlarmTimeFourChar) + 2;
-
-      // document.getElementById(`${group}-alarm-times`)
-      // XXXXXXXXXXXXXXXXXXXXXXXX use above to find insertBefore element
-      cl(followingSiblingIndex);
-      // let insertBefore = timeInput.children.item(followingSiblingIndex);
       let insertBefore = document.getElementById(`${group}-alarm-times`)
         .children[followingSiblingIndex];
-      // let insertBefore = timeInput.children;
-      cl(insertBefore);
-      cl("==============");
-
-      // let insertBefore = null;
-
-      // Update DOM to display new time
       // TODO: AM times show up with 0, but pm times don't
       let newAlarmText = "Alarm time: " + convertToAMPM(newAlarmTimeFourChar);
       let newArgs = new AlarmCreateArgs(
@@ -680,7 +657,50 @@ const proceedWith = {
         "Alarm Times:";
       document.getElementById(`${group}-new-alarm-form`).reset();
     }
+    localStorage.setItem("groups", JSON.stringify(settings.groups));
     timeToNextAlarm();
+  },
+
+  "add-group": function (evt) {
+    evt.preventDefault();
+    cl(settings);
+    cl("settings.groups is: ");
+    cl(settings.groups);
+    let nextGroup = Object.keys(settings.groups).sort((a, b) => a - b);
+    cl(nextGroup);
+    nextGroup = nextGroup.length ? Number(nextGroup.pop().slice(6)) + 1 : 1;
+    nextGroup.toString();
+    // nextGroup = nextGroup.toString;
+    let group = `group-${nextGroup}`;
+    let nameInput =
+      document.getElementById("new-group-name-input").value || "Unnamed Group";
+    addGroup(group, nameInput);
+    // let newArgs = new GroupCreateArgs(group, nameInput); // update groupCreateArgs
+    // createElementsFromRecipeObject(
+    //   newArgs.provideGroupCreateArgs(),
+    //   // group,
+    //   document.getElementById("groups")
+    // );
+    settings.groups = {
+      ...settings.groups,
+      [group]: {
+        name: nameInput,
+        groupActive: true,
+        activeDays: {
+          sun: false,
+          mon: true,
+          tue: true,
+          wed: true,
+          thu: true,
+          fri: true,
+          sat: false,
+        },
+        alarms: [],
+      },
+    };
+    cl(settings);
+    localStorage.setItem("groups", JSON.stringify(settings.groups));
+    document.getElementById("add-group-form").reset();
   },
 
   "adjust-clock": function (evt) {
@@ -712,32 +732,10 @@ const proceedWith = {
     timeToNextAlarm();
   },
 
-  "turn-group-on": function (evt) {
-    cl("turn group on");
-    cl(evt);
-    let group = groupOf(evt.target.id);
-    if (evt.target.checked) {
-      settings.groups[group].groupActive = true;
-    }
-    timeToNextAlarm();
-  },
-
-  "turn-group-off": function (evt) {
-    cl("turn group off");
-    cl(evt);
-    let group = groupOf(evt.target.id);
-    if (evt.target.checked) {
-      settings.groups[group].groupActive = false;
-    }
-    timeToNextAlarm();
-  },
-
-  "toggle-day": function (evt) {
-    cl(evt);
-    cl("toggle day");
-    let group = groupOf(evt.target.id);
-    let day = evt.target.id.slice(-3);
-    settings.groups[group].activeDays[day] = evt.target.checked;
+  "data-do-is-null": function (evt) {
+    cl(
+      "There is nothing to do for this click location, but run timeToNextAlarm anyway."
+    );
     timeToNextAlarm();
   },
 
@@ -753,52 +751,64 @@ const proceedWith = {
         "No alarms have been set in this group";
     }
     document.getElementById(alarmDivId).remove();
+    localStorage.setItem("groups", JSON.stringify(settings.groups));
+    timeToNextAlarm();
+  },
+
+  "delete-group": function (evt) {
+    let groupDivId = evt.target.id.slice(0, -11);
+    document.getElementById(groupDivId).remove();
+    delete settings.groups[groupDivId];
+    localStorage.setItem("groups", JSON.stringify(settings.groups));
+    timeToNextAlarm();
+  },
+
+  "make-alert-sound": function (evt) {
+    cl("hello from make alert sound");
+    audioContextActivated = true;
+    makeAlarm();
+    document
+      .getElementById("activate-alarms-btn")
+      .setAttribute("class", "dormant");
+    document.getElementById("activate-alarms-btn").innerText =
+      "AudioContext started; if you did not hear alarm, check speakers and try again";
+  },
+
+  "toggle-day": function (evt) {
+    cl(evt);
+    cl("toggle day");
+    let group = groupOf(evt.target.id);
+    let day = evt.target.id.slice(-3);
+    settings.groups[group].activeDays[day] = evt.target.checked;
+    localStorage.setItem("groups", JSON.stringify(settings.groups));
+    timeToNextAlarm();
+  },
+
+  "turn-group-off": function (evt) {
+    cl("turn group off");
+    cl(evt);
+    let group = groupOf(evt.target.id);
+    if (evt.target.checked) {
+      settings.groups[group].groupActive = false;
+    }
+    localStorage.setItem("groups", JSON.stringify(settings.groups));
+    timeToNextAlarm();
+  },
+
+  "turn-group-on": function (evt) {
+    cl("turn group on");
+    cl(evt);
+    let group = groupOf(evt.target.id);
+    if (evt.target.checked) {
+      settings.groups[group].groupActive = true;
+    }
+    localStorage.setItem("groups", JSON.stringify(settings.groups));
     timeToNextAlarm();
   },
 
   // "save-page": function (evt) {
   //   cl("save page");
   // },
-
-  "delete-group": function (evt) {
-    let groupDivId = evt.target.id.slice(0, -11);
-    document.getElementById(groupDivId).remove();
-    delete settings.groups[groupDivId];
-    timeToNextAlarm();
-  },
-
-  "add-group": function (evt) {
-    evt.preventDefault();
-    let group = `group-${settings.nextGroup}`;
-    let nameInput =
-      document.getElementById("new-group-name-input").value || "Unnamed Group";
-    cl(nameInput);
-    settings.groups = {
-      ...settings.groups,
-      [group]: {
-        name: nameInput,
-        groupActive: true,
-        activeDays: {
-          sun: false,
-          mon: true,
-          tue: true,
-          wed: true,
-          thu: true,
-          fri: true,
-          sat: false,
-        },
-        alarms: [],
-      },
-    };
-    cl(settings);
-    let newArgs = new GroupCreateArgs(group, nameInput); // update groupCreateArgs
-    createElementsFromRecipeObject(
-      newArgs.provideGroupCreateArgs(),
-      // group,
-      document.getElementById("groups")
-    );
-    settings.nextGroup++;
-  },
 };
 
 function handleClick(evt) {
@@ -809,14 +819,60 @@ function handleClick(evt) {
   proceedWith[functionToDo](evt);
 }
 
+function pulse() {
+  cl("pulse *************************");
+  timeToNextAlarm();
+}
+
 documentBody.addEventListener("click", function (evt) {
   cl("body clicked");
   handleClick(evt);
 });
 
-function pulse() {
-  cl("pulse *************************");
-  timeToNextAlarm();
+// start up
+// get internal data
+// get local storage data
+let groups = JSON.parse(localStorage.getItem("groups"));
+// compare and use the more recent one
+// rehydrate DOM
+// - create groups
+// -- for each group
+cl("groups is: ");
+cl(groups);
+if (groups) {
+  cl("in groups");
+  for (let groupNumber in groups) {
+    // --- get group ("group-#") and nameInput
+    let nameInput = groups[groupNumber].name;
+    // --- send these to addGroup
+    addGroup(groupNumber, nameInput);
+    if (!groups[groupNumber].groupActive) {
+      let offRadioBtn = document.getElementById(`${groupNumber}-radio-off`);
+      offRadioBtn.checked = true;
+    }
+    for (index in dayStringAssign) {
+      let dayActiveStatus =
+        groups[groupNumber].activeDays[dayStringAssign[index]];
+      let dayCheckbox = document.getElementById(
+        `${groupNumber}-day-${dayStringAssign[index]}`
+      );
+      if (dayActiveStatus) {
+        dayCheckbox.checked = true;
+      } else {
+        dayCheckbox.checked = false;
+      }
+    }
+    // --- create alarms within groups
+    if (groups[groupNumber].alarms.length) {
+      for (let alarm in groups[groupNumber].alarms) {
+        cl(alarm);
+      }
+    }
+  }
+  settings.groups = groups;
 }
+
+// activate alarms
+// check whether there is an audiocontext
 
 setInterval(pulse, settings.pulsePeriod * 1000);

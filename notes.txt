@@ -14,6 +14,8 @@ Priorities
   variable names
   not needed attributes
   move code around
+  readme
+    video
 - improvements
   select sound
   better styling
