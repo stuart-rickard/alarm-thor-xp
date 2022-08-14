@@ -804,7 +804,7 @@ const proceedWith = {
       .getElementById("activate-alarms-btn")
       .setAttribute("class", "dormant");
     document.getElementById("activate-alarms-btn").innerText =
-      "AudioContext started; if you did not hear alarm, check speakers and try again";
+      "AudioContext started; if you did not hear beeps, check speakers and try again";
   },
 
   "toggle-day": function (evt) {
