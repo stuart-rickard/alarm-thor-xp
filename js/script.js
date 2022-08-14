@@ -1,11 +1,13 @@
 const documentBody = document.body;
 const countdownEl = document.getElementById("countdown");
 
-const context = new AudioContext();
+// const context = new AudioContext();
 
 const cl = function (log) {
   console.log(log);
 };
+
+const cleanUpSong = new Audio("audio/clean-up.mp3");
 
 let settings = {
   clockDelta: 0, // minutes
@@ -37,7 +39,7 @@ let settings = {
   // nextGroup: 2,
 };
 
-let audioContextActivated = false;
+// let audioContextActivated = false;
 
 let dayStringAssign = {
   0: "sun",
@@ -49,55 +51,56 @@ let dayStringAssign = {
   6: "sat",
 };
 
-function sound(duration, frequency) {
-  return new Promise((resolve, reject) => {
-    try {
-      let oscillator = context.createOscillator();
-      oscillator.type = "sine";
-      oscillator.connect(context.destination);
-      oscillator.frequency.value = frequency;
-      oscillator.start(context.currentTime);
-      oscillator.stop(context.currentTime + duration * 0.001);
-      // Resolve the promise when the sound is finished
-      oscillator.onended = () => {
-        resolve();
-      };
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
+// function sound(duration, frequency) {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       let oscillator = context.createOscillator();
+//       oscillator.type = "sine";
+//       oscillator.connect(context.destination);
+//       oscillator.frequency.value = frequency;
+//       oscillator.start(context.currentTime);
+//       oscillator.stop(context.currentTime + duration * 0.001);
+//       // Resolve the promise when the sound is finished
+//       oscillator.onended = () => {
+//         resolve();
+//       };
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// }
 
-function delay(duration) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), duration);
-  });
-}
+// function delay(duration) {
+//   return new Promise((resolve) => {
+//     setTimeout(() => resolve(), duration);
+//   });
+// }
 
 function makeAlarm() {
-  sound(200, 100)
-    .then(() => delay(400))
-    .then(() => sound(200, 120))
-    .then(() => delay(400))
-    .then(() => sound(200, 150))
-    .then(() => delay(400))
-    .then(() => sound(200, 300))
-    .then(() => sound(100, 600))
-    .then(() => sound(100, 450))
-    .then(() => sound(100, 600))
-    .then(() => sound(200, 300))
-    .then(() => delay(400))
-    .then(() => sound(200, 300))
-    .then(() => sound(100, 600))
-    .then(() => sound(100, 450))
-    .then(() => sound(100, 600))
-    .then(() => sound(200, 300))
-    .then(() => delay(400))
-    .then(() => sound(200, 150))
-    .then(() => delay(400))
-    .then(() => sound(200, 120))
-    .then(() => delay(400))
-    .then(() => sound(200, 100));
+  cleanUpSong.play();
+  // sound(200, 100)
+  //   .then(() => delay(400))
+  //   .then(() => sound(200, 120))
+  //   .then(() => delay(400))
+  //   .then(() => sound(200, 150))
+  //   .then(() => delay(400))
+  //   .then(() => sound(200, 300))
+  //   .then(() => sound(100, 600))
+  //   .then(() => sound(100, 450))
+  //   .then(() => sound(100, 600))
+  //   .then(() => sound(200, 300))
+  //   .then(() => delay(400))
+  //   .then(() => sound(200, 300))
+  //   .then(() => sound(100, 600))
+  //   .then(() => sound(100, 450))
+  //   .then(() => sound(100, 600))
+  //   .then(() => sound(200, 300))
+  //   .then(() => delay(400))
+  //   .then(() => sound(200, 150))
+  //   .then(() => delay(400))
+  //   .then(() => sound(200, 120))
+  //   .then(() => delay(400))
+  //   .then(() => sound(200, 100));
 }
 
 function convertToAMPM(fourCharTime) {
@@ -206,7 +209,7 @@ function secondsToNextAlarm(date) {
 function timeToNextAlarm() {
   settings.timeOfNextAlarmToday = false; // reset next alarm time
   let dN = new Date();
-  let nowTimeFourChar = convertDateToFourCharTime(dN) + settings.clockDelta;
+  let nowTimeFourChar = convertDateToFourCharTime(dN);
   let nowDay = dN.getDay();
   nowDay = dayStringAssign[nowDay];
   let alarmToTest = "";

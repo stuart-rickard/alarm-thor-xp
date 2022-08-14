@@ -1,21 +1,12 @@
 Priorities
 - works for Thor
-  simple storage
-    address start up
-    address storage
-      local storage
-        store settings in local storage
-        translator to rehydrate settings
-      local file
-        store settings inside the local file (html)
-        translator to rehydrate settings
-  test / debug
 - cleanup
   variable names
   not needed attributes
   move code around
   readme
     video
+  test / debug
 - improvements
   select sound
   better styling
