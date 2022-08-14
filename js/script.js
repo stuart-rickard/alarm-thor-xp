@@ -1,7 +1,7 @@
 const documentBody = document.body;
 const countdownEl = document.getElementById("countdown");
 
-// const context = new AudioContext();
+const context = new AudioContext();
 
 const cl = function (log) {
   console.log(log);
@@ -39,7 +39,7 @@ let settings = {
   // nextGroup: 2,
 };
 
-// let audioContextActivated = false;
+let audioContextActivated = false;
 
 let dayStringAssign = {
   0: "sun",
@@ -51,30 +51,30 @@ let dayStringAssign = {
   6: "sat",
 };
 
-// function sound(duration, frequency) {
-//   return new Promise((resolve, reject) => {
-//     try {
-//       let oscillator = context.createOscillator();
-//       oscillator.type = "sine";
-//       oscillator.connect(context.destination);
-//       oscillator.frequency.value = frequency;
-//       oscillator.start(context.currentTime);
-//       oscillator.stop(context.currentTime + duration * 0.001);
-//       // Resolve the promise when the sound is finished
-//       oscillator.onended = () => {
-//         resolve();
-//       };
-//     } catch (error) {
-//       reject(error);
-//     }
-//   });
-// }
+function sound(duration, frequency) {
+  return new Promise((resolve, reject) => {
+    try {
+      let oscillator = context.createOscillator();
+      oscillator.type = "sine";
+      oscillator.connect(context.destination);
+      oscillator.frequency.value = frequency;
+      oscillator.start(context.currentTime);
+      oscillator.stop(context.currentTime + duration * 0.001);
+      // Resolve the promise when the sound is finished
+      oscillator.onended = () => {
+        resolve();
+      };
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
 
-// function delay(duration) {
-//   return new Promise((resolve) => {
-//     setTimeout(() => resolve(), duration);
-//   });
-// }
+function delay(duration) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), duration);
+  });
+}
 
 function makeAlarm() {
   cleanUpSong.play();
@@ -89,6 +89,26 @@ function makeAlarm() {
   //   .then(() => sound(100, 450))
   //   .then(() => sound(100, 600))
   //   .then(() => sound(200, 300))
+  //   .then(() => delay(400))
+  //   .then(() => sound(200, 300))
+  //   .then(() => sound(100, 600))
+  //   .then(() => sound(100, 450))
+  //   .then(() => sound(100, 600))
+  //   .then(() => sound(200, 300))
+  //   .then(() => delay(400))
+  //   .then(() => sound(200, 150))
+  //   .then(() => delay(400))
+  //   .then(() => sound(200, 120))
+  //   .then(() => delay(400))
+  //   .then(() => sound(200, 100));
+}
+
+function makeBeeps() {
+  sound(200, 300)
+    .then(() => sound(100, 600))
+    .then(() => sound(100, 450))
+    .then(() => sound(100, 600))
+    .then(() => sound(200, 300));
   //   .then(() => delay(400))
   //   .then(() => sound(200, 300))
   //   .then(() => sound(100, 600))
@@ -764,10 +784,22 @@ const proceedWith = {
     timeToNextAlarm();
   },
 
-  "make-alert-sound": function (evt) {
-    cl("hello from make alert sound");
+  // "make-alert-sound": function (evt) {
+  //   cl("hello from make alert sound");
+  //   audioContextActivated = true;
+  //   makeAlarm();
+  //   document
+  //     .getElementById("activate-alarms-btn")
+  //     .setAttribute("class", "dormant");
+  //   document.getElementById("activate-alarms-btn").innerText =
+  //     "AudioContext started; if you did not hear alarm, check speakers and try again";
+  // },
+
+  "change-appearance": function (evt) {
+    cl("user must interact with page to allow sounds");
     audioContextActivated = true;
-    makeAlarm();
+    // makeAlarm();
+    makeBeeps();
     document
       .getElementById("activate-alarms-btn")
       .setAttribute("class", "dormant");
