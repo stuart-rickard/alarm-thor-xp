@@ -3,23 +3,18 @@ const countdownEl = document.getElementById("countdown");
 
 const context = new AudioContext();
 
-const cl = function (log) {
-  console.log(log);
-};
-
 let settings = {
   timeOfNextAlarmToday: false, // false initially and when there's no alarm in the future today
-  timeToNextAlarm: 0, // seconds
+  timeToNextAlarm: 0,
   lastAlarm: {
     // initially, a time in the past
     date: "200000",
     time: "0000",
   },
   pulsePeriod: 1, // seconds; must be less than 60
+  // this empty group settings apply is replaced if there are groups stored in Local Storage
   groups: {},
 };
-
-let audioContextActivated = false;
 
 let dayStringAssign = {
   0: "sun",
@@ -50,6 +45,7 @@ function sound(duration, frequency) {
   });
 }
 
+// delay function is used to create a gap in sound in the makeAlarm function
 function delay(duration) {
   return new Promise((resolve) => {
     setTimeout(() => resolve(), duration);
@@ -70,6 +66,9 @@ function makeAlarm() {
     .then(() => sound(200, 300));
 }
 
+// TIME FORMAT CONVERSION FUNCTIONS
+
+// convert,for example, 1803 to 6:03 PM
 function convertToAMPM(fourCharTime) {
   let hourString = fourCharTime[0] + fourCharTime[1];
   hour = Number(hourString);
@@ -97,11 +96,13 @@ function convertToAMPM(fourCharTime) {
   }
 }
 
+// convert, for example, 18:03 to 1803
 function convertToFourCharTime(fiveCharTime) {
   let fourCharTime = fiveCharTime.replace(":", "");
   return fourCharTime;
 }
 
+// convert a Date to YYMMDD format
 function convertToSixCharDate(date) {
   let year = date.getFullYear();
   let month = date.getMonth();
@@ -112,6 +113,7 @@ function convertToSixCharDate(date) {
   return year.toString().slice(-2) + monthTwoChar + dayTwoChar;
 }
 
+// convert a Date to hhmm format
 function convertDateToFourCharTime(date) {
   let nowHour = date.getHours();
   let nowMinute = date.getMinutes();
@@ -122,17 +124,19 @@ function convertDateToFourCharTime(date) {
   return hourTwoChar + minuteTwoChar;
 }
 
+// used to find the group from the id of a clicked element
 function groupOf(idString) {
   let secondHyphenIndex = idString.indexOf("-", 6);
   let groupString = idString.slice(0, secondHyphenIndex);
   return groupString;
 }
 
-function secondsToNextAlarm(date) {
+// provides the time to the next alarm as a string; returns a "no alarm" message if there aren't any more alarms this day
+function createTimeToNextAlarmString(date, nextAlarm) {
   let nowHour = date.getHours();
   let nowMinute = date.getMinutes();
   let nowSeconds = date.getSeconds();
-  let nextAlarm = settings.timeOfNextAlarmToday;
+  // let nextAlarm = settings.timeOfNextAlarmToday;
   if (nextAlarm) {
     let nowTotalSeconds = nowHour * 3600 + nowMinute * 60 + nowSeconds;
     let nextAlarmTotalSeconds =
@@ -169,52 +173,65 @@ function secondsToNextAlarm(date) {
   }
 }
 
-// rename this function
-function timeToNextAlarm() {
+// check whether it is time to make an alarm sound and update timeOfNextAlarmToday string
+function checkAlarmTimes() {
   settings.timeOfNextAlarmToday = false; // reset next alarm time
+
+  // get current time and day in format to compare to alarms
   let dN = new Date();
-
   let nowTimeFourChar = convertDateToFourCharTime(dN);
-
   let nowDay = dN.getDay();
   nowDay = dayStringAssign[nowDay];
+
+  // initially, alarmToTest is an empty string
   let alarmToTest = "";
 
+  // look for active alarms by checking each alarm group
   for (group in settings.groups) {
+    // if the group is active
     if (settings.groups[group].groupActive) {
+      // and if the day is active
       if (settings.groups[group].activeDays[nowDay]) {
+        // check each alarm in the group
         for (let i = 0; i < settings.groups[group].alarms.length; i++) {
           alarmToTest = settings.groups[group].alarms[i];
+          // if the alarm is in the future (the string alarmToTest is alphabetically larger than the four character string for the current time)
           if (alarmToTest > nowTimeFourChar) {
+            // check whether the alarm is closer in the future than the current stored time for the next alarm -- if so, update the stored time for the next alarm
             if (
               alarmToTest <
               (settings.timeOfNextAlarmToday
                 ? settings.timeOfNextAlarmToday
                 : "2401") // if timeOfNextAlarmToday is false, compare to "2401", which will always be true
-            )
+            ) {
               settings.timeOfNextAlarmToday = alarmToTest;
+            }
           } else {
+            // if the alarm is not in the future, check whether the alarm should be sounded now
             if (alarmToTest == nowTimeFourChar) {
               let dateNowSixChar = convertToSixCharDate(dN);
+              // if the alarm wasn't sounded today during the current minute
               if (
                 settings.lastAlarm.date != dateNowSixChar ||
                 settings.lastAlarm.time != alarmToTest
               ) {
+                // sound the alarm and update settings so that we know the alarm was sounded today during the current minute
+                makeAlarm();
                 settings.lastAlarm.date = dateNowSixChar;
                 settings.lastAlarm.time = alarmToTest;
-                makeAlarm();
               }
-            } else {
             }
           }
         }
       }
     }
   }
-  settings.timeToNextAlarm = secondsToNextAlarm(dN);
+  // update the countdown timer
+  settings.timeToNextAlarm = createTimeToNextAlarmString(dN, alarmToTest);
   countdownEl.innerText = "Time until next alarm: " + settings.timeToNextAlarm;
 }
 
+// class for creating arguments for alarm elements
 class AlarmCreateArgs {
   constructor(group, alarmTime, newAlarmText, insertBefore) {
     this.group = group;
@@ -222,7 +239,7 @@ class AlarmCreateArgs {
     this.newAlarmText = newAlarmText;
     this.insertBefore = insertBefore;
   }
-
+  // the returned object is used as the argument for creating alarm elements in the createElementsFromRecipeObject function
   provideAlarmCreateArgs() {
     return {
       1: {
@@ -252,12 +269,14 @@ class AlarmCreateArgs {
   }
 }
 
+// class for creating arguments for group elements
 class GroupCreateArgs {
   constructor(group, groupName) {
     this.group = group;
     this.groupName = groupName;
   }
-
+  // the returned object is used as the argument for creating group elements in the createElementsFromRecipeObject function
+  // the settings object is separately updated in add-group - edit with caution as they need to match!
   provideGroupCreateArgs() {
     return {
       1: {
@@ -455,8 +474,7 @@ class GroupCreateArgs {
               1: {
                 type: "h2",
                 attributes: {
-                  id: `${this.group}-no-alarm-note`,
-                  "data-show": "yes",
+                  id: `${this.group}-alarm-times-text`,
                 },
                 props: { innerText: "No alarms have been set in this group" },
               },
@@ -501,14 +519,18 @@ class GroupCreateArgs {
   }
 }
 
+// creates a new alarm group in the DOM
 function addGroup(group, nameInput) {
-  let newArgs = new GroupCreateArgs(group, nameInput); // update groupCreateArgs
+  // create an object describing the group elements we want to create
+  let newArgs = new GroupCreateArgs(group, nameInput);
+  // pass this object to the function that creates new elements in the DOM, along with the element under which the new elements should be placed
   createElementsFromRecipeObject(
     newArgs.provideGroupCreateArgs(),
     document.getElementById("groups")
   );
 }
 
+// creates elements in the DOM using 1) a recipe object that is passed in as an argument which describes the elements to be created, and 2) the parent element to which the new elements should be appended
 const createElementsFromRecipeObject = function (recipeObject, parentElement) {
   for (let key in recipeObject) {
     let createdElement = createElement({
@@ -527,6 +549,7 @@ const createElementsFromRecipeObject = function (recipeObject, parentElement) {
   }
 };
 
+// creates a single element which is described by the properties of an object that is passed as an argument
 const createElement = function ({
   type,
   styles,
@@ -536,6 +559,7 @@ const createElement = function ({
   appendTo,
   insertBefore,
 }) {
+  // use default values for any properties that aren't defined in the argument object
   let elementType = type || "div";
   let elementStyles = styles || {};
   let elementAttributes = attributes || {};
@@ -544,7 +568,9 @@ const createElement = function ({
   let elementAppendTo = appendTo || "body";
   let elementInsertBefore = insertBefore || null;
 
+  // create new element
   let element = document.createElement(elementType);
+  // customize as needed
   for (let key in elementStyles) {
     element.style[key] = elementStyles[key];
   }
@@ -557,57 +583,94 @@ const createElement = function ({
   for (let key in elementEventHandlers) {
     element.addEventListener(key, elementEventHandlers[key]);
   }
+  // append it to the appropriate location in the DOM
   elementAppendTo.insertBefore(element, elementInsertBefore);
 
+  // return the element as it may need to be used as a parent element
   return element;
 };
 
+// the values of proceedWith are functions which are run if the key of the property is the data-do class of an element that is clicked by the user; for example, if the user clicks an element that has a data-do class that is "add-alarm", the function with the "add-alarm" property is run; see the handleClick function
 const proceedWith = {
+  // we need the user to interact with the page to active the AudioContext -- otherwise the page can't make a sound; this function is intended to be run when the page is initially opened
+  "activate-sound": function (evt) {
+    // make a sound for the user
+    makeAlarm();
+    // change the style of the button
+    document
+      .getElementById("activate-alarms-btn")
+      .setAttribute("class", "dormant");
+    // update the text of the button
+    document.getElementById("activate-alarms-btn").innerText =
+      "AudioContext started; if you did not hear alarm, check speakers and click here again to test";
+  },
+
+  // add an alarm
   "add-alarm": function (evt) {
     evt.preventDefault();
+    // get the group name and time input
     let group = groupOf(evt.target.id);
     let timeInput = document.getElementById(`${group}-new-alarm-input`);
     let newAlarmTimeFiveChar = timeInput.value;
+    // if a time is provided, convert it to four character format and add it to the appropriate group in the settings object
     if (newAlarmTimeFiveChar) {
       let newAlarmTimeFourChar = convertToFourCharTime(newAlarmTimeFiveChar);
       settings.groups[group].alarms.push(newAlarmTimeFourChar);
+      // sort the alarms from earliest to latest times
       settings.groups[group].alarms.sort((a, b) => a - b);
+      // determine the index which the new alarm should appear before (if any)
       let followingSiblingIndex =
         settings.groups[group].alarms.indexOf(newAlarmTimeFourChar) + 2;
+      // find the element which the new alarm should appear before (if any)
       let insertBefore = document.getElementById(`${group}-alarm-times`)
         .children[followingSiblingIndex];
+      // create text for the new alarm
       let newAlarmText = "Alarm time: " + convertToAMPM(newAlarmTimeFourChar);
+      // create an object describing the alarm elements we want to create
       let newArgs = new AlarmCreateArgs(
         group,
         newAlarmTimeFourChar,
         newAlarmText,
         insertBefore
       );
+      // pass this object to the function that creates new elements in the DOM, along with the element under which the new elements should be placed
       createElementsFromRecipeObject(
         newArgs.provideAlarmCreateArgs(),
         document.getElementById(`${group}-alarm-times`)
       );
 
-      document.getElementById(`${group}-no-alarm-note`).innerText =
+      // if there were previously no alarms, we need to update the text
+      document.getElementById(`${group}-alarm-times-text`).innerText =
         "Alarm Times:";
+      // reset the alarm time input form
       document.getElementById(`${group}-new-alarm-form`).reset();
     }
+
+    // update Local Storage
     localStorage.setItem("groups", JSON.stringify(settings.groups));
-    timeToNextAlarm();
+
+    // update the page
+    checkAlarmTimes();
   },
 
+  // add a group
   "add-group": function (evt) {
     evt.preventDefault();
+    // create a unique group number by incrementing the highest current group number
     let nextGroup = Object.keys(settings.groups).sort((a, b) => a - b);
     nextGroup = nextGroup.length ? Number(nextGroup.pop().slice(6)) + 1 : 1;
     nextGroup.toString();
     let group = `group-${nextGroup}`;
+    // get the user's desired name for the group
     let nameInput =
       document.getElementById("new-group-name-input").value || "Unnamed Group";
+    // add a group to the DOM using the unique group number and the user's desired name
     addGroup(group, nameInput);
+    // update the settings object to reflect the new group
     settings.groups = {
       ...settings.groups,
       [group]: {
+        // note that these properties are separately created in GroupCreateArgs - they need to match!
         name: nameInput,
         groupActive: true,
         activeDays: {
@@ -622,50 +685,55 @@ const proceedWith = {
         alarms: [],
       },
     };
-    cl(settings);
+    console.log(settings);
+    // update Local Storage
     localStorage.setItem("groups", JSON.stringify(settings.groups));
+    // reset the add group input form
     document.getElementById("add-group-form").reset();
   },
 
+  // this runs if the user clicks on an element that does not have a data-do class
   "data-do-is-null": function (evt) {
-    cl(
-      "There is nothing to do for this click location, but run timeToNextAlarm anyway."
+    console.log(
+      "There is nothing to do for this click location, but run checkAlarmTimes anyway."
     );
-    timeToNextAlarm();
+    checkAlarmTimes();
   },
 
+  // delete an alarm time
   "delete-alarm": function (evt) {
-    evt.preventDefault();
+    // get the group and time of the clicked delete alarm button
     let alarmDivId = evt.target.id.slice(11);
     let group = groupOf(alarmDivId);
     let alarmTime = alarmDivId.slice(-4);
+    // delete the alarm from the approprate group in the setting object
     let alarmsArray = settings.groups[group].alarms;
     alarmsArray.splice(alarmsArray.indexOf(alarmTime), 1);
+    // if there are no alarms left in the group, update the alarm times text
     if (!alarmsArray.length) {
-      document.getElementById(`${group}-no-alarm-note`).innerText =
+      document.getElementById(`${group}-alarm-times-text`).innerText =
         "No alarms have been set in this group";
     }
+    // remove the alarm element from the DOM
     document.getElementById(alarmDivId).remove();
+    // update Local Storage
     localStorage.setItem("groups", JSON.stringify(settings.groups));
-    timeToNextAlarm();
+    // update the page
+    checkAlarmTimes();
   },
 
+  // delete a group
   "delete-group": function (evt) {
+    // get the group from the event
     let groupDivId = evt.target.id.slice(0, -11);
+    // remove the group from the DOM
     document.getElementById(groupDivId).remove();
+    // remove the group from the settings object
     delete settings.groups[groupDivId];
+    // update Local Storage
     localStorage.setItem("groups", JSON.stringify(settings.groups));
-    timeToNextAlarm();
-  },
-
-  "make-alert-sound": function (evt) {
-    audioContextActivated = true;
-    makeAlarm();
-    document
-      .getElementById("activate-alarms-btn")
-      .setAttribute("class", "dormant");
-    document.getElementById("activate-alarms-btn").innerText =
-      "AudioContext started; if you did not hear alarm, check speakers and try again";
+    // update the page
+    checkAlarmTimes();
   },
 
   "toggle-day": function (evt) {
@@ -673,7 +741,7 @@ const proceedWith = {
     let day = evt.target.id.slice(-3);
     settings.groups[group].activeDays[day] = evt.target.checked;
     localStorage.setItem("groups", JSON.stringify(settings.groups));
-    timeToNextAlarm();
+    checkAlarmTimes();
   },
 
   "turn-group-off": function (evt) {
@@ -682,7 +750,7 @@ const proceedWith = {
       settings.groups[group].groupActive = false;
     }
     localStorage.setItem("groups", JSON.stringify(settings.groups));
-    timeToNextAlarm();
+    checkAlarmTimes();
   },
 
   "turn-group-on": function (evt) {
@@ -691,18 +759,18 @@ const proceedWith = {
       settings.groups[group].groupActive = true;
     }
     localStorage.setItem("groups", JSON.stringify(settings.groups));
-    timeToNextAlarm();
+    checkAlarmTimes();
   },
 };
 
 function handleClick(evt) {
-  cl("data-do is: " + evt.target.getAttribute("data-do"));
+  console.log("data-do is: " + evt.target.getAttribute("data-do"));
   let functionToDo = evt.target.getAttribute("data-do") || "data-do-is-null";
   proceedWith[functionToDo](evt);
 }
 
 function pulse() {
-  timeToNextAlarm();
+  checkAlarmTimes();
 }
 
 documentBody.addEventListener("click", function (evt) {
@@ -752,7 +820,7 @@ if (groups) {
           document.getElementById(`${groupNumber}-alarm-times`)
         );
 
-        document.getElementById(`${groupNumber}-no-alarm-note`).innerText =
+        document.getElementById(`${groupNumber}-alarm-times-text`).innerText =
           "Alarm Times:";
       }
     }

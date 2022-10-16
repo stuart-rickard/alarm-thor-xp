@@ -81,7 +81,6 @@ button {
   border-radius: 10px;
   font-size: large;
   color: red;
-  /* background-color: yellowgreen; */
 }
 
 #activate-alarms-btn.dormant {
@@ -92,14 +91,4 @@ button {
   border-color: gray;
   font-size: medium;
   color: black;
-  /* background-color: yellowgreen; */
-}
-
-/* data-show is not used XXXXXXXXXXXXXXXXXXXXX */
-[data-show="yes"] {
-  /* display: unset; */
-}
-
-[data-show="no"] {
-  display: none;
 }
