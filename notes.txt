@@ -1,7 +1,6 @@
 Priorities
+- chrome extension
 - cleanup
-  clock adjust working in Thor branch
-  use TypeScript
   figure out deployment - keep Thor link; new link for main
   incorporate good stuff from Thor branch into main
   variable names
@@ -11,7 +10,7 @@ Priorities
     video
   test / debug
 - improvements
+  use TypeScript
   select sound
   better styling
-  chrome extension
   error message if clock adjustment could affect alarm that is close to midnight

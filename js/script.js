@@ -8,8 +8,6 @@ const cl = function (log) {
 };
 
 let settings = {
-  //  clockDelta: 0, // minutes
-  siteChanged: false,
   timeOfNextAlarmToday: false, // false initially and when there's no alarm in the future today
   timeToNextAlarm: 0, // seconds
   lastAlarm: {
@@ -18,23 +16,7 @@ let settings = {
     time: "0000",
   },
   pulsePeriod: 1, // seconds; must be less than 60
-  groups: {
-    // "group-1": {
-    //   name: "Group 1",
-    //   groupActive: true,
-    //   activeDays: {
-    //     sun: false,
-    //     mon: true,
-    //     tue: true,
-    //     wed: true,
-    //     thu: true,
-    //     fri: true,
-    //     sat: false,
-    //   },
-    //   alarms: [],
-    // },
-  },
-  // nextGroup: 2,
+  groups: {},
 };
 
 let audioContextActivated = false;
@@ -75,13 +57,7 @@ function delay(duration) {
 }
 
 function makeAlarm() {
-  sound(200, 100)
-    .then(() => delay(400))
-    .then(() => sound(200, 120))
-    .then(() => delay(400))
-    .then(() => sound(200, 150))
-    .then(() => delay(400))
-    .then(() => sound(200, 300))
+  sound(200, 300)
     .then(() => sound(100, 600))
     .then(() => sound(100, 450))
     .then(() => sound(100, 600))
@@ -91,13 +67,7 @@ function makeAlarm() {
     .then(() => sound(100, 600))
     .then(() => sound(100, 450))
     .then(() => sound(100, 600))
-    .then(() => sound(200, 300))
-    .then(() => delay(400))
-    .then(() => sound(200, 150))
-    .then(() => delay(400))
-    .then(() => sound(200, 120))
-    .then(() => delay(400))
-    .then(() => sound(200, 100));
+    .then(() => sound(200, 300));
 }
 
 function convertToAMPM(fourCharTime) {
@@ -165,8 +135,6 @@ function secondsToNextAlarm(date) {
   let nextAlarm = settings.timeOfNextAlarmToday;
   if (nextAlarm) {
     let nowTotalSeconds = nowHour * 3600 + nowMinute * 60 + nowSeconds;
-    // Adjust for clock adjustment
-    // nowTotalSeconds = nowTotalSeconds - settings.clockDelta * 60;
     let nextAlarmTotalSeconds =
       nextAlarm.slice(0, 2) * 3600 + nextAlarm.slice(-2) * 60;
     let deltaValue = nextAlarmTotalSeconds - nowTotalSeconds;
@@ -218,11 +186,6 @@ function timeToNextAlarm() {
         for (let i = 0; i < settings.groups[group].alarms.length; i++) {
           alarmToTest = settings.groups[group].alarms[i];
           if (alarmToTest > nowTimeFourChar) {
-            // cl(
-            //   settings.timeOfNextAlarmToday
-            //     ? settings.timeOfNextAlarmToday
-            //     : "2401"
-            // );
             if (
               alarmToTest <
               (settings.timeOfNextAlarmToday
@@ -230,7 +193,6 @@ function timeToNextAlarm() {
                 : "2401") // if timeOfNextAlarmToday is false, compare to "2401", which will always be true
             )
               settings.timeOfNextAlarmToday = alarmToTest;
-            // TODO deal with new day and with restart on same day
           } else {
             if (alarmToTest == nowTimeFourChar) {
               let dateNowSixChar = convertToSixCharDate(dN);
@@ -307,28 +269,18 @@ class GroupCreateArgs {
         childElements: {
           1: {
             type: "h2",
-            // styles,
             attributes: { class: "button-after" },
             props: { innerText: this.groupName },
-            // eventHandlers,
-            // appendTo:
           },
           2: {
             type: "button",
-            // styles,
             attributes: {
               "data-do": "delete-group",
               id: `${this.group}-delete-btn`,
             },
             props: { innerText: "x delete group" },
-            // eventHandlers,
-            // appendTo:
           },
-          // 3: {
-          //   type: "p",
-          //   props: { innerText: "Turn group on or off" },
-          // },
-          4: {
+          3: {
             attributes: {
               class: "radio-buttons",
             },
@@ -368,11 +320,11 @@ class GroupCreateArgs {
               },
             },
           },
-          5: {
+          4: {
             type: "p",
             props: { innerText: "Select active days" },
           },
-          6: {
+          5: {
             attributes: { class: "weekDays-selector" },
             childElements: {
               1: {
@@ -494,17 +446,13 @@ class GroupCreateArgs {
               },
             },
           },
-          7: {
+          6: {
             attributes: {
               class: "alarm-times",
               id: `${this.group}-alarm-times`,
             },
             childElements: {
-              // 1: {
-              //   type: "h3",
-              //   props: { innerText: "Alarm Times:" },
-              // },
-              2: {
+              1: {
                 type: "h2",
                 attributes: {
                   id: `${this.group}-no-alarm-note`,
@@ -512,7 +460,7 @@ class GroupCreateArgs {
                 },
                 props: { innerText: "No alarms have been set in this group" },
               },
-              3: {
+              2: {
                 type: "form",
                 attributes: {
                   id: `${this.group}-new-alarm-form`,
@@ -557,19 +505,16 @@ function addGroup(group, nameInput) {
   let newArgs = new GroupCreateArgs(group, nameInput); // update groupCreateArgs
   createElementsFromRecipeObject(
     newArgs.provideGroupCreateArgs(),
-    // group,
     document.getElementById("groups")
   );
 }
 
-// createElementsFromRecipeObject function
 const createElementsFromRecipeObject = function (recipeObject, parentElement) {
   for (let key in recipeObject) {
     let createdElement = createElement({
       ...recipeObject[key],
       appendTo: parentElement,
     });
-    // cl("createdElement is: " + createdElement);
     // if there's a childElements property,
     if (recipeObject[key].childElements) {
       // send it to createElementsFromRecipeObject
@@ -614,8 +559,6 @@ const createElement = function ({
   }
   elementAppendTo.insertBefore(element, elementInsertBefore);
 
-  // cl(element);
-
   return element;
 };
 
@@ -626,7 +569,6 @@ const proceedWith = {
     let timeInput = document.getElementById(`${group}-new-alarm-input`);
     let newAlarmTimeFiveChar = timeInput.value;
     if (newAlarmTimeFiveChar) {
-      // Add time to status object
       let newAlarmTimeFourChar = convertToFourCharTime(newAlarmTimeFiveChar);
       settings.groups[group].alarms.push(newAlarmTimeFourChar);
       settings.groups[group].alarms.sort((a, b) => a - b);
@@ -641,7 +583,6 @@ const proceedWith = {
         newAlarmText,
         insertBefore
       );
-      cl(newArgs.provideAlarmCreateArgs());
       createElementsFromRecipeObject(
         newArgs.provideAlarmCreateArgs(),
         document.getElementById(`${group}-alarm-times`)
@@ -657,24 +598,13 @@ const proceedWith = {
 
   "add-group": function (evt) {
     evt.preventDefault();
-    cl(settings);
-    cl("settings.groups is: ");
-    cl(settings.groups);
     let nextGroup = Object.keys(settings.groups).sort((a, b) => a - b);
-    cl(nextGroup);
     nextGroup = nextGroup.length ? Number(nextGroup.pop().slice(6)) + 1 : 1;
     nextGroup.toString();
-    // nextGroup = nextGroup.toString;
     let group = `group-${nextGroup}`;
     let nameInput =
       document.getElementById("new-group-name-input").value || "Unnamed Group";
     addGroup(group, nameInput);
-    // let newArgs = new GroupCreateArgs(group, nameInput); // update groupCreateArgs
-    // createElementsFromRecipeObject(
-    //   newArgs.provideGroupCreateArgs(),
-    //   // group,
-    //   document.getElementById("groups")
-    // );
     settings.groups = {
       ...settings.groups,
       [group]: {
@@ -696,40 +626,6 @@ const proceedWith = {
     localStorage.setItem("groups", JSON.stringify(settings.groups));
     document.getElementById("add-group-form").reset();
   },
-
-  // "adjust-clock": function (evt) {
-  //   evt.preventDefault();
-  //   let timeInput = document.getElementById("clock-adjust-input");
-  //   let newAlarmTimeFiveChar = timeInput.value;
-  //   let dN = new Date();
-  //   let nowTimeFourChar = convertDateToFourCharTime(dN);
-  //   cl(nowTimeFourChar);
-
-  //   if (newAlarmTimeFiveChar) {
-  //     // Add time to status object
-  //     let newAlarmTimeFourChar = convertToFourCharTime(newAlarmTimeFiveChar);
-  //     cl(newAlarmTimeFiveChar);
-  //     let nowTimeTotalMinutes =
-  //       Number(nowTimeFourChar.slice(0, 2)) * 60 +
-  //       Number(nowTimeFourChar.slice(-2));
-  //     cl(nowTimeTotalMinutes);
-  //     let clockTimeTotalMinutes =
-  //       Number(newAlarmTimeFourChar.slice(0, 2)) * 60 +
-  //       Number(newAlarmTimeFourChar.slice(-2));
-  //     cl(clockTimeTotalMinutes);
-  //     let adjustmentMinutes = nowTimeTotalMinutes - clockTimeTotalMinutes;
-  //     cl(adjustmentMinutes);
-  //     settings.clockDelta = adjustmentMinutes;
-  //     // Update DOM to display new time
-
-  //     document.getElementById("clock-adjust-form").reset();
-  //     document.getElementById("clock-adjust-status").innerText =
-  //       adjustmentMinutes == 1 || adjustmentMinutes == -1
-  //         ? `Clock time adjustment: ${adjustmentMinutes} minute.`
-  //         : `Clock time adjustment: ${adjustmentMinutes} minutes.`;
-  //   }
-  //   timeToNextAlarm();
-  // },
 
   "data-do-is-null": function (evt) {
     cl(
@@ -763,7 +659,6 @@ const proceedWith = {
   },
 
   "make-alert-sound": function (evt) {
-    cl("hello from make alert sound");
     audioContextActivated = true;
     makeAlarm();
     document
@@ -774,8 +669,6 @@ const proceedWith = {
   },
 
   "toggle-day": function (evt) {
-    cl(evt);
-    cl("toggle day");
     let group = groupOf(evt.target.id);
     let day = evt.target.id.slice(-3);
     settings.groups[group].activeDays[day] = evt.target.checked;
@@ -784,8 +677,6 @@ const proceedWith = {
   },
 
   "turn-group-off": function (evt) {
-    cl("turn group off");
-    cl(evt);
     let group = groupOf(evt.target.id);
     if (evt.target.checked) {
       settings.groups[group].groupActive = false;
@@ -795,8 +686,6 @@ const proceedWith = {
   },
 
   "turn-group-on": function (evt) {
-    cl("turn group on");
-    cl(evt);
     let group = groupOf(evt.target.id);
     if (evt.target.checked) {
       settings.groups[group].groupActive = true;
@@ -804,42 +693,28 @@ const proceedWith = {
     localStorage.setItem("groups", JSON.stringify(settings.groups));
     timeToNextAlarm();
   },
-
-  // "save-page": function (evt) {
-  //   cl("save page");
-  // },
 };
 
 function handleClick(evt) {
-  // evt.preventDefault();
   cl("data-do is: " + evt.target.getAttribute("data-do"));
-  // cl(evt);
   let functionToDo = evt.target.getAttribute("data-do") || "data-do-is-null";
   proceedWith[functionToDo](evt);
 }
 
 function pulse() {
-  cl("pulse *************************");
   timeToNextAlarm();
 }
 
 documentBody.addEventListener("click", function (evt) {
-  cl("body clicked");
   handleClick(evt);
 });
 
-// start up
-// get internal data
 // get local storage data
 let groups = JSON.parse(localStorage.getItem("groups"));
-// compare and use the more recent one
 // rehydrate DOM
 // - create groups
 // -- for each group
-cl("groups is: ");
-cl(groups);
 if (groups) {
-  cl("in groups");
   for (let groupNumber in groups) {
     // --- get group ("group-#") and nameInput
     let nameInput = groups[groupNumber].name;
@@ -864,7 +739,6 @@ if (groups) {
     // --- create alarms within groups
     if (groups[groupNumber].alarms.length) {
       for (let alarm of groups[groupNumber].alarms) {
-        cl(alarm);
         let newAlarmText = "Alarm time: " + convertToAMPM(alarm);
 
         let newArgs = new AlarmCreateArgs(
@@ -873,7 +747,6 @@ if (groups) {
           newAlarmText,
           null
         );
-        cl(newArgs.provideAlarmCreateArgs());
         createElementsFromRecipeObject(
           newArgs.provideAlarmCreateArgs(),
           document.getElementById(`${groupNumber}-alarm-times`)
@@ -886,8 +759,5 @@ if (groups) {
   }
   settings.groups = groups;
 }
-
-// activate alarms
-// check whether there is an audiocontext
 
 setInterval(pulse, settings.pulsePeriod * 1000);
