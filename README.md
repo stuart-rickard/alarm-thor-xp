@@ -2,7 +2,7 @@
 
 ## Website with multiple configurable alarms
 
-A friend is a teacher who needed a series of alarms to play from a Chromebox. During the school day, he has multiple periods and he needed an audible alarm to play a short time before the end of the period so that the students would be reminded to clean up before they needed to leave for the next class. The schedule of class periods can vary from day to day and week to week.
+A friend is a teacher who needed a series of alarms to play from a Chromebox. During the school day, he has multiple periods and he needs an audible alarm to play a short time before the end of the period so that the students are reminded to clean up before they leave for the next class. The schedule of class periods can vary from day to day and week to week, so alarm groups can be created and turned on and off.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -11,8 +11,7 @@ A friend is a teacher who needed a series of alarms to play from a Chromebox. Du
 - [Installation](#installation)
 - [Usage](#usage)
 - [License](#license)
-- [Contributing](#contributing)
-- [Questions](#questions)
+- [Questions/Contributing](#questionscontributing)
 - [Thanks](#thanks)
 
 ## Installation
@@ -31,24 +30,18 @@ Once a group is created, you can add an alarm to the group by entering a time at
 
 Within a group, it is possible to select active days and to turn the group off or back on again. There is also a button to delete a group.
 
-To adjust for the wall clock,
-
 ## License
 
 This project is licensed using an MIT License.
 
 See the [license](./LICENSE) file for license rights and limitations.
 
-## Contributing
+## Questions/Contributing
 
-Please feel free to contact me if you would like to contribute.
-
-## Questions
-
-Please feel free to contact me if you have any questions.
+Please feel free to contact me if you have questions or would like to contribute.
 
 ## Thanks
 
 Thanks to Bimo on [stackoverflow](https://stackoverflow.com/questions/879152/how-do-i-make-javascript-beep) and to Carlos Delgado on [ourcodeworld](https://ourcodeworld.com/articles/read/1627/how-to-easily-generate-a-beep-notification-sound-with-javascript) for guidance about making sounds.  
-Thanks to steelwater on [codepen](https://codepen.io/steelwater/pen/BjeZQx) for  
+Thanks to steelwater on [codepen](https://codepen.io/steelwater/pen/BjeZQx) for day of week buttons example.
 Thanks to Sooraj on [DEV](https://dev.to/soorajsnblaze333/generic-snippets-dom-element-creation-3go9) for suggestions about element creation.

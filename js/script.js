@@ -736,47 +736,61 @@ const proceedWith = {
     checkAlarmTimes();
   },
 
+  // toggle the boolean activeDays value in the settings object for the appropriate group and day
   "toggle-day": function (evt) {
+    // get the group and day
     let group = groupOf(evt.target.id);
     let day = evt.target.id.slice(-3);
+    // match the settings value to the checked value of the event target
     settings.groups[group].activeDays[day] = evt.target.checked;
+    // update Local Storage
     localStorage.setItem("groups", JSON.stringify(settings.groups));
+    // update the page
     checkAlarmTimes();
   },
 
+  // make the groupActive property false in the settings object for the appropriate group
   "turn-group-off": function (evt) {
+    // get the group
     let group = groupOf(evt.target.id);
+    // update the settings object for the appropriate group
     if (evt.target.checked) {
       settings.groups[group].groupActive = false;
     }
+    // update Local Storage
     localStorage.setItem("groups", JSON.stringify(settings.groups));
+    // update the page
     checkAlarmTimes();
   },
 
+  // make the groupActive property false in the settings object for the appropriate group
   "turn-group-on": function (evt) {
+    // get the group
     let group = groupOf(evt.target.id);
+    // update the settings object for the appropriate group
     if (evt.target.checked) {
       settings.groups[group].groupActive = true;
     }
+    // update Local Storage
     localStorage.setItem("groups", JSON.stringify(settings.groups));
+    // update the page
     checkAlarmTimes();
   },
 };
 
+// this function handles all clicks on the page; if the target has a data-do class attribute, we use that attribute to run the designated function in the proceedWith object; if it doesn't, we run a default function
 function handleClick(evt) {
   console.log("data-do is: " + evt.target.getAttribute("data-do"));
   let functionToDo = evt.target.getAttribute("data-do") || "data-do-is-null";
   proceedWith[functionToDo](evt);
 }
 
-function pulse() {
-  checkAlarmTimes();
-}
-
+// all clicks on the body element are handled by handleClick
 documentBody.addEventListener("click", function (evt) {
   handleClick(evt);
 });
 
+// START UP CODE TO LOAD SETTINGS
 // get local storage data
 let groups = JSON.parse(localStorage.getItem("groups"));
 // rehydrate DOM
@@ -825,7 +839,9 @@ if (groups) {
       }
     }
   }
+  // update the settings object
   settings.groups = groups;
 }
 
-setInterval(pulse, settings.pulsePeriod * 1000);
+// update the page using an interval provided in the settings object
+setInterval(checkAlarmTimes, settings.pulsePeriod * 1000);

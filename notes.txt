@@ -3,14 +3,8 @@ Priorities
 - cleanup
   figure out deployment - keep Thor link; new link for main
   incorporate good stuff from Thor branch into main
-  variable names
-  not needed attributes
-  move code around
-  readme
-    video
   test / debug
 - improvements
   use TypeScript
-  select sound
+  select sound file
   better styling
-  error message if clock adjustment could affect alarm that is close to midnight
