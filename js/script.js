@@ -8,7 +8,7 @@ const cl = function (log) {
 };
 
 let settings = {
-  clockDelta: 0, // minutes
+  //  clockDelta: 0, // minutes
   siteChanged: false,
   timeOfNextAlarmToday: false, // false initially and when there's no alarm in the future today
   timeToNextAlarm: 0, // seconds
@@ -166,7 +166,7 @@ function secondsToNextAlarm(date) {
   if (nextAlarm) {
     let nowTotalSeconds = nowHour * 3600 + nowMinute * 60 + nowSeconds;
     // Adjust for clock adjustment
-    nowTotalSeconds = nowTotalSeconds - settings.clockDelta * 60;
+    // nowTotalSeconds = nowTotalSeconds - settings.clockDelta * 60;
     let nextAlarmTotalSeconds =
       nextAlarm.slice(0, 2) * 3600 + nextAlarm.slice(-2) * 60;
     let deltaValue = nextAlarmTotalSeconds - nowTotalSeconds;
@@ -202,11 +202,12 @@ function secondsToNextAlarm(date) {
 }
 
 // rename this function
-// TODO test edge cases of adjusted clock
 function timeToNextAlarm() {
   settings.timeOfNextAlarmToday = false; // reset next alarm time
   let dN = new Date();
-  let nowTimeFourChar = convertDateToFourCharTime(dN) + settings.clockDelta;
+
+  let nowTimeFourChar = convertDateToFourCharTime(dN);
+
   let nowDay = dN.getDay();
   nowDay = dayStringAssign[nowDay];
   let alarmToTest = "";
@@ -696,39 +697,39 @@ const proceedWith = {
     document.getElementById("add-group-form").reset();
   },
 
-  "adjust-clock": function (evt) {
-    evt.preventDefault();
-    let timeInput = document.getElementById("clock-adjust-input");
-    let newAlarmTimeFiveChar = timeInput.value;
-    let dN = new Date();
-    let nowTimeFourChar = convertDateToFourCharTime(dN);
-    cl(nowTimeFourChar);
+  // "adjust-clock": function (evt) {
+  //   evt.preventDefault();
+  //   let timeInput = document.getElementById("clock-adjust-input");
+  //   let newAlarmTimeFiveChar = timeInput.value;
+  //   let dN = new Date();
+  //   let nowTimeFourChar = convertDateToFourCharTime(dN);
+  //   cl(nowTimeFourChar);
 
-    if (newAlarmTimeFiveChar) {
-      // Add time to status object
-      let newAlarmTimeFourChar = convertToFourCharTime(newAlarmTimeFiveChar);
-      cl(newAlarmTimeFiveChar);
-      let nowTimeTotalMinutes =
-        Number(nowTimeFourChar.slice(0, 2)) * 60 +
-        Number(nowTimeFourChar.slice(-2));
-      cl(nowTimeTotalMinutes);
-      let clockTimeTotalMinutes =
-        Number(newAlarmTimeFourChar.slice(0, 2)) * 60 +
-        Number(newAlarmTimeFourChar.slice(-2));
-      cl(clockTimeTotalMinutes);
-      let adjustmentMinutes = nowTimeTotalMinutes - clockTimeTotalMinutes;
-      cl(adjustmentMinutes);
-      settings.clockDelta = adjustmentMinutes;
-      // Update DOM to display new time
+  //   if (newAlarmTimeFiveChar) {
+  //     // Add time to status object
+  //     let newAlarmTimeFourChar = convertToFourCharTime(newAlarmTimeFiveChar);
+  //     cl(newAlarmTimeFiveChar);
+  //     let nowTimeTotalMinutes =
+  //       Number(nowTimeFourChar.slice(0, 2)) * 60 +
+  //       Number(nowTimeFourChar.slice(-2));
+  //     cl(nowTimeTotalMinutes);
+  //     let clockTimeTotalMinutes =
+  //       Number(newAlarmTimeFourChar.slice(0, 2)) * 60 +
+  //       Number(newAlarmTimeFourChar.slice(-2));
+  //     cl(clockTimeTotalMinutes);
+  //     let adjustmentMinutes = nowTimeTotalMinutes - clockTimeTotalMinutes;
+  //     cl(adjustmentMinutes);
+  //     settings.clockDelta = adjustmentMinutes;
+  //     // Update DOM to display new time
 
-      document.getElementById("clock-adjust-form").reset();
-      document.getElementById("clock-adjust-status").innerText =
-        adjustmentMinutes == 1 || adjustmentMinutes == -1
-          ? `Clock time adjustment: ${adjustmentMinutes} minute.`
-          : `Clock time adjustment: ${adjustmentMinutes} minutes.`;
-    }
-    timeToNextAlarm();
-  },
+  //     document.getElementById("clock-adjust-form").reset();
+  //     document.getElementById("clock-adjust-status").innerText =
+  //       adjustmentMinutes == 1 || adjustmentMinutes == -1
+  //         ? `Clock time adjustment: ${adjustmentMinutes} minute.`
+  //         : `Clock time adjustment: ${adjustmentMinutes} minutes.`;
+  //   }
+  //   timeToNextAlarm();
+  // },
 
   "data-do-is-null": function (evt) {
     cl(

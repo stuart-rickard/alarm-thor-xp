@@ -1,46 +1,17 @@
 Priorities
-- works for Thor
-  simple storage
-    address start up
-    address storage
-      local storage
-        store settings in local storage
-        translator to rehydrate settings
-      local file
-        store settings inside the local file (html)
-        translator to rehydrate settings
-  test / debug
 - cleanup
+  clock adjust working in Thor branch
+  use TypeScript
+  figure out deployment - keep Thor link; new link for main
+  incorporate good stuff from Thor branch into main
   variable names
   not needed attributes
   move code around
   readme
     video
+  test / debug
 - improvements
   select sound
   better styling
   chrome extension
-
-
-storing settings
-  strategy one:
-    create json from settings and keep dom synced with settings
-      handle opening the webpage
-      create method of saving settings
-      create method of retrieving settings
-  strategy two:
-    save everything within live html that gets saved
-      why do checkboxes and buttons reset?
-      make it easier to save the webpage (naming of file?)
-      update code to reference the dom instead of settings
-      
-activate
-  turn on audioContext
-  update status object
-    get data from all groups and alarms
-    update the status object
-  determine next alarm (see above)
-  // unhide elements?
-  check whether clock time is correct?
-
-instructions to save webpage
+  error message if clock adjustment could affect alarm that is close to midnight
