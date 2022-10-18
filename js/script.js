@@ -227,7 +227,10 @@ function checkAlarmTimes() {
     }
   }
   // update the countdown timer
-  settings.timeToNextAlarm = createTimeToNextAlarmString(dN, alarmToTest);
+  settings.timeToNextAlarm = createTimeToNextAlarmString(
+    dN,
+    settings.timeOfNextAlarmToday
+  );
   countdownEl.innerText = "Time until next alarm: " + settings.timeToNextAlarm;
 }
 

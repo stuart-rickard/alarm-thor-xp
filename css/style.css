@@ -1,3 +1,30 @@
+html,
+body,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a {
+  border: 0;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  vertical-align: baseline;
+}
+
+html {
+  max-width: 70ch;
+  padding: 3em 1em;
+  margin: auto;
+  line-height: 1.75;
+  font-size: 1.5em;
+}
+
 body {
   font-family: Sans-serif;
 }
@@ -91,4 +118,10 @@ button {
   border-color: gray;
   font-size: medium;
   color: black;
+}
+
+@media only screen and (min-width: 600px) {
+  html {
+    font-size: 1em;
+  }
 }
