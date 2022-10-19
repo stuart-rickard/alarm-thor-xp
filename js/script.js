@@ -491,6 +491,7 @@ class GroupCreateArgs {
                     type: "label",
                     attributes: {
                       for: `${this.group}-new-alarm-input`,
+                      class: "mr4p",
                     },
                     props: { innerText: "Choose a time for your alarm:" },
                   },
@@ -502,6 +503,7 @@ class GroupCreateArgs {
                       name: `${this.group}-new-alarm-input`,
                       "data-do": "add-alarm",
                       required: "",
+                      class: "mr4p",
                     },
                   },
                   3: {
