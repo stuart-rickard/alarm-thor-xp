@@ -26,7 +26,7 @@ IMPORTANT: It is necessary to interact with the page so that it can make sounds.
 
 When the browser opens the HTML file the first time, there are no alarms set.
 
-Alarms are grouped, so first go to the bottom of the page and click the "+ Add Group" button (you can create a group name if you wish, but this is optional). Multiple groups can be created if desired.
+Alarms are grouped, so first click the "+ Add Group" button (you can create a group name if you wish, but this is optional). Multiple groups can be created if desired.
 
 Once a group is created, you can add an alarm to the group by entering a time at the "Choose a time for your alarm" prompt then clicking the "+ add alarm" button. Add more alarms if desired using this procedure.
 
