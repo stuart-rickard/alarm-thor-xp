@@ -22,7 +22,7 @@ This project uses vanilla HTML, JavaScript, and CSS. Once you have pulled the fi
 
 ## Usage
 
-IMPORTANT: It is necessary to interact with the page so that it can make sounds. Chrome and other browsers prevent webpages from making sounds unless the user has interacted with the webpage. This is the reason for the "ACTIVATE ALARMS" button.
+IMPORTANT: It is necessary to interact with the page so that it can make sounds. Chrome and other browsers prevent webpages from making sounds unless the user has interacted with the webpage. This is the reason for the "CHECK SPEAKERS" button.
 
 When the browser opens the HTML file the first time, there are no alarms set.
 
